@@ -54,3 +54,11 @@ target_link_libraries(GetHTML_test PRIVATE
         iiHtmlBlock)
 
 add_test(NAME Parser_GetHTML_ReturnsHtmlTags COMMAND GetHTML_test)
+
+add_executable(iiXmlToHTML_test
+        Test/iiXmlToHTML_test.cpp)
+
+target_link_libraries(iiXmlToHTML_test PRIVATE
+        iiHtmlBlock)
+
+add_test(NAME Modifier_iiXmlToHTML_ConvertsThroughGetHTML COMMAND iiXmlToHTML_test)

@@ -1,6 +1,6 @@
 #include "GetHTML.h"
 
-#include <iiXml/Src/Parser/TagParser.h>
+#include <iiXml.h>
 
 #include <QByteArray>
 #include <QDebug>

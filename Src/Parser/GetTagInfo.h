@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QString>
 
+#include <cstddef>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -22,7 +23,11 @@ public:
     struct FieldInfo {
         std::string name;
         std::string value;
+        std::size_t name_begin;
+        std::size_t name_end;
         bool has_value;
+        std::size_t value_begin;
+        std::size_t value_end;
         FieldType type;
         bool type_declared;
     };
@@ -31,8 +36,23 @@ public:
         std::string tag_name;
         std::string value;
         std::string raw;
+        std::size_t raw_begin;
+        std::size_t value_begin;
+        std::size_t value_end;
+        std::size_t raw_end;
         std::vector<FieldInfo> fields;
         std::vector<TagInfo> children;
+    };
+
+    struct RangeInfo {
+        std::string tag_name;
+        std::string value;
+        std::string raw;
+        std::size_t raw_begin;
+        std::size_t value_begin;
+        std::size_t value_end;
+        std::size_t raw_end;
+        std::vector<FieldInfo> fields;
     };
 
     explicit GetTagInfo(QObject* parent = nullptr);
@@ -42,6 +62,7 @@ public:
     [[nodiscard]] bool Parse(const QString& xml);
 
     [[nodiscard]] const std::vector<TagInfo>& GetTags() const;
+    [[nodiscard]] const std::vector<RangeInfo>& GetRanges() const;
     [[nodiscard]] const TagInfo* GetRoot() const;
     [[nodiscard]] const std::string& GetTagName() const;
     [[nodiscard]] const std::string& GetValue() const;
@@ -61,6 +82,7 @@ private:
     void Clear();
 
     std::vector<TagInfo> tags_;
+    std::vector<RangeInfo> ranges_;
     std::string tag_name_;
     std::string value_;
     std::string raw_;

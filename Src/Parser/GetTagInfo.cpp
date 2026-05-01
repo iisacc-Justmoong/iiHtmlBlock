@@ -1,6 +1,6 @@
 #include "GetTagInfo.h"
 
-#include <iiXml/Src/Parser/TagParser.h>
+#include <iiXml.h>
 
 #include <QByteArray>
 #include <QDebug>
@@ -48,7 +48,11 @@ std::vector<GetTagInfo::FieldInfo> ConvertFields(
         converted.push_back(GetTagInfo::FieldInfo{
             field.name,
             field.has_value ? Slice(xml, field.value_begin, field.value_end) : std::string{},
+            field.name_begin,
+            field.name_end,
             field.has_value,
+            field.value_begin,
+            field.value_end,
             ConvertFieldType(field.value_type),
             field.type_declared
         });
@@ -62,6 +66,10 @@ GetTagInfo::TagInfo ConvertNode(std::string_view xml, const iiXml::parser::tag_n
         node.range.tag_name,
         Slice(xml, node.range.value_begin, node.range.value_end),
         Slice(xml, node.range.raw_begin, node.range.raw_end),
+        node.range.raw_begin,
+        node.range.value_begin,
+        node.range.value_end,
+        node.range.raw_end,
         ConvertFields(xml, node.fields),
         {}
     };
@@ -72,6 +80,30 @@ GetTagInfo::TagInfo ConvertNode(std::string_view xml, const iiXml::parser::tag_n
     }
 
     return converted;
+}
+
+GetTagInfo::RangeInfo ConvertRange(std::string_view xml, const iiXml::parser::tag_node& node) {
+    return GetTagInfo::RangeInfo{
+        node.range.tag_name,
+        Slice(xml, node.range.value_begin, node.range.value_end),
+        Slice(xml, node.range.raw_begin, node.range.raw_end),
+        node.range.raw_begin,
+        node.range.value_begin,
+        node.range.value_end,
+        node.range.raw_end,
+        ConvertFields(xml, node.fields)
+    };
+}
+
+void AppendRanges(
+    std::string_view xml,
+    const iiXml::parser::tag_node& node,
+    std::vector<GetTagInfo::RangeInfo>& ranges
+) {
+    ranges.push_back(ConvertRange(xml, node));
+    for (const iiXml::parser::tag_node& child : node.children) {
+        AppendRanges(xml, child, ranges);
+    }
 }
 
 std::string ToUtf8String(const QString& value) {
@@ -143,6 +175,10 @@ const std::vector<GetTagInfo::TagInfo>& GetTagInfo::GetTags() const {
     return tags_;
 }
 
+const std::vector<GetTagInfo::RangeInfo>& GetTagInfo::GetRanges() const {
+    return ranges_;
+}
+
 const GetTagInfo::TagInfo* GetTagInfo::GetRoot() const {
     if (tags_.empty()) {
         return nullptr;
@@ -196,6 +232,7 @@ bool GetTagInfo::StoreParsedTags(std::string_view xml) {
     tags_.reserve(parsed->size());
     for (const iiXml::parser::tag_node& node : *parsed) {
         tags_.push_back(ConvertNode(xml, node));
+        AppendRanges(xml, node, ranges_);
     }
 
     const TagInfo& root = tags_.front();
@@ -209,6 +246,7 @@ bool GetTagInfo::StoreParsedTags(std::string_view xml) {
 
 void GetTagInfo::Clear() {
     tags_.clear();
+    ranges_.clear();
     tag_name_.clear();
     value_.clear();
     raw_.clear();
