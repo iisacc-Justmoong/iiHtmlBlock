@@ -1,0 +1,6 @@
+#ifndef IIHTMLBLOCK_LIBRARY_H
+#define IIHTMLBLOCK_LIBRARY_H
+
+void hello();
+
+#endif // IIHTMLBLOCK_LIBRARY_H
