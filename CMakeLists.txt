@@ -5,8 +5,15 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
 if(EXISTS "$ENV{HOME}/Qt/6.8.3/macos/lib/cmake/Qt6/Qt6Config.cmake")
     list(PREPEND CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.8.3/macos")
+endif()
+
+if(EXISTS "$ENV{HOME}/.local/iiXml/lib/cmake/iiXml/iiXmlConfig.cmake")
+    list(PREPEND CMAKE_PREFIX_PATH "$ENV{HOME}/.local/iiXml")
 endif()
 
 if(EXISTS "$ENV{HOME}/.local/lib/cmake/iiXml/iiXmlConfig.cmake")
@@ -31,11 +38,45 @@ add_library(iiHtmlBlock SHARED iiHtmlBlock.cpp
         Src/Modifier/iiXmlToHTML.h)
 
 target_include_directories(iiHtmlBlock PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(iiHtmlBlock PUBLIC
         Qt6::Core
         iiXml::iiXml)
+
+install(TARGETS iiHtmlBlock
+        EXPORT iiHtmlBlockTargets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+install(FILES iiHtmlBlock iiHtmlBlock.h
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(DIRECTORY Src/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Src
+        FILES_MATCHING PATTERN "*.h")
+
+install(EXPORT iiHtmlBlockTargets
+        FILE iiHtmlBlockTargets.cmake
+        NAMESPACE iiHtmlBlock::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiHtmlBlock)
+
+configure_package_config_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/iiHtmlBlockConfig.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfig.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiHtmlBlock)
+
+write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfigVersion.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion)
+
+install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiHtmlBlock)
 
 enable_testing()
 
@@ -86,3 +127,19 @@ target_link_libraries(FlattenBlock_test PRIVATE
         iiHtmlBlock)
 
 add_test(NAME Modifier_FlattenBlock_LayersDocumentBlocks COMMAND FlattenBlock_test)
+
+add_executable(install_layout_test
+        Test/install_layout_test.cpp)
+
+target_compile_definitions(install_layout_test PRIVATE
+        IIHTMLBLOCK_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+
+add_test(NAME install_layout_test COMMAND install_layout_test)
+
+add_executable(umbrella_header_test
+        Test/umbrella_header_test.cpp)
+
+target_link_libraries(umbrella_header_test PRIVATE
+        iiHtmlBlock)
+
+add_test(NAME umbrella_header_test COMMAND umbrella_header_test)

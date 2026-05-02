@@ -6,7 +6,8 @@
 ## 책임
 
 - XML 원문은 설치된 `~/.local`의 `iiXml::iiXml` 타깃과 공개 헤더 `iiXml.h`를 통해 해석한다.
-- 내부 파싱은 `iiXml::parser::tag_parser::parse_all()`을 사용한다.
+- 내부 파싱은 `iiXml::Parser::TagParser::ParseAll()`을 사용한다.
+- 본문 태그 앞의 XML 선언과 DOCTYPE은 태그 range가 아니므로 파싱 전에 제거한다.
 - 첫 번째 루트 태그의 이름, 원문, 값, 필드 목록을 빠른 조회용 상태로 저장한다.
 - 전체 루트 태그 목록과 자식 태그 계층은 `GetTags()`와 `GetRoot()`로 조회한다.
 - `iiXml`의 range 모델을 보존하기 위해 모든 태그의 `raw_begin`, `value_begin`,

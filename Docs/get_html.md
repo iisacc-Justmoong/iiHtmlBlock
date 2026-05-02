@@ -6,7 +6,8 @@
 ## 책임
 
 - XML 원문은 설치된 `~/.local`의 `iiXml::iiXml` 타깃과 공개 헤더 `iiXml.h`로 파싱한다.
-- 내부 파싱은 `iiXml::parser::tag_parser::parse_all()`을 사용한다.
+- 내부 파싱은 `iiXml::Parser::TagParser::ParseAll()`을 사용한다.
+- 본문 태그 앞의 XML 선언과 DOCTYPE은 HTML 변환 대상이 아니므로 파싱 전에 제거한다.
 - XML 태그명은 HTML 표준 태그나 의미 태그로 변환하지 않고 그대로 출력한다.
 - `paragraph`, `bold`, `XML`, `CustomTag` 같은 태그도 커스텀 HTML 태그로 보고
   입력 태그명 그대로 열고 닫는다.

@@ -5,11 +5,12 @@
 
 ## GetTagInfo
 
-`Src/Parser/GetTagInfo.*`는 XML 문자열을 받아 `iiXml::parser::tag_parser`와 호환되는
+`Src/Parser/GetTagInfo.*`는 XML 문자열을 받아 `iiXml::Parser::TagParser`와 호환되는
 방식으로 첫 루트 태그의 값과 필드를 내부 상태로 저장한다. 전체 태그 계층은
 `GetTags()`/`GetRoot()`로 조회하고, 첫 루트 태그의 값과 필드는 `GetValue()`와
 `GetFields()`로 조회한다. 교차 종료처럼 트리만으로 표현하기 어려운 iiXml 구조는
-`GetRanges()`의 원본 offset range로 보존한다.
+`GetRanges()`의 원본 offset range로 보존한다. 본문 태그 앞의 XML 선언과 DOCTYPE은
+태그 range가 아니므로 파싱 전에 제거한다.
 
 상세 내용은 `Docs/get_tag_info.md`를 참고한다.
 
@@ -54,6 +55,13 @@
 `LayerBlock` 그룹에 포함된 블록으로 취급된다.
 
 상세 내용은 `Docs/flatten_block.md`를 참고한다.
+
+## 설치
+
+`install.sh`는 iiXml과 같은 방식으로 빌드, 테스트, 설치를 한 번에 수행하며
+iiHtmlBlock을 `~/.local/iiHtmlBlock` 아래에 설치한다.
+
+상세 내용은 `Docs/install.md`를 참고한다.
 
 ## 검증
 

@@ -14,15 +14,15 @@
 
 namespace {
 
-GetTagInfo::FieldType ConvertFieldType(iiXml::elements::inline_property_type type) {
+GetTagInfo::FieldType ConvertFieldType(iiXml::Elements::InlinePropertyType type) {
     switch (type) {
-        case iiXml::elements::inline_property_type::string_type:
+        case iiXml::Elements::InlinePropertyType::StringType:
             return GetTagInfo::FieldType::String;
-        case iiXml::elements::inline_property_type::int_type:
+        case iiXml::Elements::InlinePropertyType::IntType:
             return GetTagInfo::FieldType::Int;
-        case iiXml::elements::inline_property_type::float_type:
+        case iiXml::Elements::InlinePropertyType::FloatType:
             return GetTagInfo::FieldType::Float;
-        case iiXml::elements::inline_property_type::bool_type:
+        case iiXml::Elements::InlinePropertyType::BoolType:
             return GetTagInfo::FieldType::Bool;
     }
 
@@ -37,71 +37,111 @@ std::string Slice(std::string_view source, std::size_t begin, std::size_t end) {
     return std::string(source.substr(begin, end - begin));
 }
 
+bool IsAsciiSpace(char value) {
+    return value == ' ' || value == '\n' || value == '\r' || value == '\t';
+}
+
+std::string_view TrimLeadingAscii(std::string_view source) {
+    std::size_t begin = 0;
+    while (begin < source.size() && IsAsciiSpace(source[begin])) {
+        ++begin;
+    }
+
+    return source.substr(begin);
+}
+
+std::string NormalizeParserInput(std::string_view xml) {
+    xml = TrimLeadingAscii(xml);
+
+    bool consumed = true;
+    while (consumed) {
+        consumed = false;
+
+        if (xml.rfind("<?xml", 0) == 0) {
+            const std::size_t end = xml.find("?>");
+            if (end != std::string_view::npos) {
+                xml = TrimLeadingAscii(xml.substr(end + 2));
+                consumed = true;
+            }
+        }
+
+        if (xml.rfind("<!DOCTYPE", 0) == 0 || xml.rfind("<!doctype", 0) == 0) {
+            const std::size_t end = xml.find('>');
+            if (end != std::string_view::npos) {
+                xml = TrimLeadingAscii(xml.substr(end + 1));
+                consumed = true;
+            }
+        }
+    }
+
+    return std::string(xml);
+}
+
 std::vector<GetTagInfo::FieldInfo> ConvertFields(
     std::string_view xml,
-    const std::vector<iiXml::parser::tag_field>& fields
+    const std::vector<iiXml::Parser::TagField>& fields
 ) {
     std::vector<GetTagInfo::FieldInfo> converted;
     converted.reserve(fields.size());
 
-    for (const iiXml::parser::tag_field& field : fields) {
+    for (const iiXml::Parser::TagField& field : fields) {
         converted.push_back(GetTagInfo::FieldInfo{
-            field.name,
-            field.has_value ? Slice(xml, field.value_begin, field.value_end) : std::string{},
-            field.name_begin,
-            field.name_end,
-            field.has_value,
-            field.value_begin,
-            field.value_end,
-            ConvertFieldType(field.value_type),
-            field.type_declared
+            field.Name,
+            field.HasValue ? Slice(xml, field.ValueBegin, field.ValueEnd) : std::string{},
+            field.NameBegin,
+            field.NameEnd,
+            field.HasValue,
+            field.ValueBegin,
+            field.ValueEnd,
+            ConvertFieldType(field.ValueType),
+            field.TypeDeclared
         });
     }
 
     return converted;
 }
 
-GetTagInfo::TagInfo ConvertNode(std::string_view xml, const iiXml::parser::tag_node& node) {
+GetTagInfo::TagInfo ConvertNode(std::string_view xml, const iiXml::Parser::TagNode& node) {
     GetTagInfo::TagInfo converted{
-        node.range.tag_name,
-        Slice(xml, node.range.value_begin, node.range.value_end),
-        Slice(xml, node.range.raw_begin, node.range.raw_end),
-        node.range.raw_begin,
-        node.range.value_begin,
-        node.range.value_end,
-        node.range.raw_end,
-        ConvertFields(xml, node.fields),
+        node.Range.TagName,
+        Slice(xml, node.Range.ValueBegin, node.Range.ValueEnd),
+        Slice(xml, node.Range.RawBegin, node.Range.RawEnd),
+        node.Range.RawBegin,
+        node.Range.ValueBegin,
+        node.Range.ValueEnd,
+        node.Range.RawEnd,
+        ConvertFields(xml, node.Fields),
         {}
     };
 
-    converted.children.reserve(node.children.size());
-    for (const iiXml::parser::tag_node& child : node.children) {
+    converted.children.reserve(node.Children.size());
+    for (const iiXml::Parser::TagNode& child : node.Children) {
         converted.children.push_back(ConvertNode(xml, child));
     }
 
     return converted;
 }
 
-GetTagInfo::RangeInfo ConvertRange(std::string_view xml, const iiXml::parser::tag_node& node) {
+GetTagInfo::RangeInfo ConvertRange(std::string_view xml, const iiXml::Parser::TagNode& node) {
     return GetTagInfo::RangeInfo{
-        node.range.tag_name,
-        Slice(xml, node.range.value_begin, node.range.value_end),
-        Slice(xml, node.range.raw_begin, node.range.raw_end),
-        node.range.raw_begin,
-        node.range.value_begin,
-        node.range.value_end,
-        node.range.raw_end,
-        ConvertFields(xml, node.fields)
+        node.Range.TagName,
+        Slice(xml, node.Range.ValueBegin, node.Range.ValueEnd),
+        Slice(xml, node.Range.RawBegin, node.Range.RawEnd),
+        node.Range.RawBegin,
+        node.Range.ValueBegin,
+        node.Range.ValueEnd,
+        node.Range.RawEnd,
+        ConvertFields(xml, node.Fields)
     };
 }
 
 void AppendRanges(
     std::string_view xml,
-    const iiXml::parser::tag_node& node,
+    const iiXml::Parser::TagNode& node,
     std::vector<GetTagInfo::RangeInfo>& ranges
 ) {
     ranges.push_back(ConvertRange(xml, node));
-    for (const iiXml::parser::tag_node& child : node.children) {
+    for (const iiXml::Parser::TagNode& child : node.Children) {
         AppendRanges(xml, child, ranges);
     }
 }
@@ -140,7 +180,8 @@ bool GetTagInfo::Parse(std::string_view xml) {
     try {
         Clear();
 
-        if (!StoreParsedTags(xml)) {
+        const std::string normalized = NormalizeParserInput(xml);
+        if (!StoreParsedTags(normalized)) {
             qDebug() << "GetTagInfo::Parse failed"
                      << "reason=" << QString::fromStdString(error_);
             return false;
@@ -217,8 +258,8 @@ void GetTagInfo::ParseXml(const QString& xml) {
 }
 
 bool GetTagInfo::StoreParsedTags(std::string_view xml) {
-    const iiXml::parser::tag_parser parser;
-    const std::optional<std::vector<iiXml::parser::tag_node>> parsed = parser.parse_all(xml);
+    const iiXml::Parser::TagParser parser;
+    const std::optional<std::vector<iiXml::Parser::TagNode>> parsed = parser.ParseAll(xml);
     if (!parsed.has_value()) {
         error_ = "iiXml tag parser rejected input";
         return false;
@@ -230,7 +271,7 @@ bool GetTagInfo::StoreParsedTags(std::string_view xml) {
     }
 
     tags_.reserve(parsed->size());
-    for (const iiXml::parser::tag_node& node : *parsed) {
+    for (const iiXml::Parser::TagNode& node : *parsed) {
         tags_.push_back(ConvertNode(xml, node));
         AppendRanges(xml, node, ranges_);
     }

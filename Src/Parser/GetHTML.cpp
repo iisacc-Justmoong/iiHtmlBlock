@@ -111,22 +111,62 @@ std::string Slice(std::string_view source, std::size_t begin, std::size_t end) {
     return std::string(source.substr(begin, end - begin));
 }
 
+bool IsAsciiSpace(char value) {
+    return value == ' ' || value == '\n' || value == '\r' || value == '\t';
+}
+
+std::string_view TrimLeadingAscii(std::string_view source) {
+    std::size_t begin = 0;
+    while (begin < source.size() && IsAsciiSpace(source[begin])) {
+        ++begin;
+    }
+
+    return source.substr(begin);
+}
+
+std::string NormalizeParserInput(std::string_view xml) {
+    xml = TrimLeadingAscii(xml);
+
+    bool consumed = true;
+    while (consumed) {
+        consumed = false;
+
+        if (xml.rfind("<?xml", 0) == 0) {
+            const std::size_t end = xml.find("?>");
+            if (end != std::string_view::npos) {
+                xml = TrimLeadingAscii(xml.substr(end + 2));
+                consumed = true;
+            }
+        }
+
+        if (xml.rfind("<!DOCTYPE", 0) == 0 || xml.rfind("<!doctype", 0) == 0) {
+            const std::size_t end = xml.find('>');
+            if (end != std::string_view::npos) {
+                xml = TrimLeadingAscii(xml.substr(end + 1));
+                consumed = true;
+            }
+        }
+    }
+
+    return std::string(xml);
+}
+
 std::string RenderAttributes(
     std::string_view xml,
-    const iiXml::parser::tag_node& node
+    const iiXml::Parser::TagNode& node
 ) {
     std::string html;
 
-    for (const iiXml::parser::tag_field& field : node.fields) {
-        if (!IsAttributeNameSafe(field.name)) {
+    for (const iiXml::Parser::TagField& field : node.Fields) {
+        if (!IsAttributeNameSafe(field.Name)) {
             continue;
         }
 
         html.push_back(' ');
-        html += field.name;
-        if (field.has_value) {
+        html += field.Name;
+        if (field.HasValue) {
             html += "=\"";
-            html += EscapeAttribute(Slice(xml, field.value_begin, field.value_end));
+            html += EscapeAttribute(Slice(xml, field.ValueBegin, field.ValueEnd));
             html.push_back('"');
         }
     }
@@ -134,36 +174,36 @@ std::string RenderAttributes(
     return html;
 }
 
-std::string RenderNode(std::string_view xml, const iiXml::parser::tag_node& node) {
-    const std::string html_tag_name = ResolveHtmlTagName(node.range.tag_name);
+std::string RenderNode(std::string_view xml, const iiXml::Parser::TagNode& node) {
+    const std::string html_tag_name = ResolveHtmlTagName(node.Range.TagName);
     std::string html = "<" + html_tag_name + RenderAttributes(xml, node) + ">";
 
-    std::vector<const iiXml::parser::tag_node*> children;
-    children.reserve(node.children.size());
-    for (const iiXml::parser::tag_node& child : node.children) {
+    std::vector<const iiXml::Parser::TagNode*> children;
+    children.reserve(node.Children.size());
+    for (const iiXml::Parser::TagNode& child : node.Children) {
         children.push_back(&child);
     }
 
     std::sort(
         children.begin(),
         children.end(),
-        [](const iiXml::parser::tag_node* left, const iiXml::parser::tag_node* right) {
-            return left->range.raw_begin < right->range.raw_begin;
+        [](const iiXml::Parser::TagNode* left, const iiXml::Parser::TagNode* right) {
+            return left->Range.RawBegin < right->Range.RawBegin;
         }
     );
 
-    std::size_t cursor = node.range.value_begin;
-    for (const iiXml::parser::tag_node* child : children) {
-        if (cursor < child->range.raw_begin) {
-            html += EscapeText(xml.substr(cursor, child->range.raw_begin - cursor));
+    std::size_t cursor = node.Range.ValueBegin;
+    for (const iiXml::Parser::TagNode* child : children) {
+        if (cursor < child->Range.RawBegin) {
+            html += EscapeText(xml.substr(cursor, child->Range.RawBegin - cursor));
         }
 
         html += RenderNode(xml, *child);
-        cursor = child->range.raw_end;
+        cursor = child->Range.RawEnd;
     }
 
-    if (cursor < node.range.value_end) {
-        html += EscapeText(xml.substr(cursor, node.range.value_end - cursor));
+    if (cursor < node.Range.ValueEnd) {
+        html += EscapeText(xml.substr(cursor, node.Range.ValueEnd - cursor));
     }
 
     html += "</";
@@ -196,9 +236,11 @@ bool GetHTML::Parse(std::string_view xml) {
              << "input_size=" << xml.size();
     try {
         Clear();
+        const std::string normalized = NormalizeParserInput(xml);
+        const std::string_view parse_input(normalized.data(), normalized.size());
 
-        const iiXml::parser::tag_parser parser;
-        const std::optional<std::vector<iiXml::parser::tag_node>> parsed = parser.parse_all(xml);
+        const iiXml::Parser::TagParser parser;
+        const std::optional<std::vector<iiXml::Parser::TagNode>> parsed = parser.ParseAll(parse_input);
         if (!parsed.has_value()) {
             error_ = "iiXml tag parser rejected input";
             qDebug() << "GetHTML::Parse failed"
@@ -213,10 +255,10 @@ bool GetHTML::Parse(std::string_view xml) {
             return false;
         }
 
-        tag_name_ = ResolveHtmlTagName(parsed->front().range.tag_name);
-        source_tag_name_ = parsed->front().range.tag_name;
-        for (const iiXml::parser::tag_node& node : *parsed) {
-            html_ += RenderNode(xml, node);
+        tag_name_ = ResolveHtmlTagName(parsed->front().Range.TagName);
+        source_tag_name_ = parsed->front().Range.TagName;
+        for (const iiXml::Parser::TagNode& node : *parsed) {
+            html_ += RenderNode(parse_input, node);
         }
 
         qDebug() << "GetHTML::Parse parsed"
