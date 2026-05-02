@@ -30,6 +30,31 @@
 
 상세 내용은 `Docs/iixml_to_html.md`를 참고한다.
 
+## DivideBlock
+
+`Src/Modifier/DivideBlock.*`는 `GetTagInfo`가 파싱한 태그 range를 기준으로 각 요소가
+블록 단위인지 판정한다. 기본 HTML 블록 태그를 인식하고, `style="display: block"`이나
+`display=block` 같은 명시적 display 값은 기본 태그 판정보다 우선한다. 알 수 없는
+커스텀 태그는 명시적 display 값이 있을 때만 블록으로 본다.
+
+상세 내용은 `Docs/divide_block.md`를 참고한다.
+
+## CombineBlock
+
+`Src/Modifier/CombineBlock.*`는 `DivideBlock`으로 나뉜 블록 목록에서 여러 블록을
+선택하고, 선택 묶음을 하나의 논리 블록으로 병합 취급한다. 병합은 원본 HTML을
+재작성하지 않고 선택 인덱스와 선택된 블록 스냅샷을 `CombinedBlock`으로 저장한다.
+
+상세 내용은 `Docs/combine_block.md`를 참고한다.
+
+## FlattenBlock
+
+`Src/Modifier/FlattenBlock.*`는 문서의 모든 블록을 유지한 채 하나의 상위 그룹 블록
+레이어로 묶는다. 각 블록은 개별 `ElementInfo`로 남아 있으면서, 동시에 단일
+`LayerBlock` 그룹에 포함된 블록으로 취급된다.
+
+상세 내용은 `Docs/flatten_block.md`를 참고한다.
+
 ## 검증
 
 ```sh

@@ -62,3 +62,27 @@ target_link_libraries(iiXmlToHTML_test PRIVATE
         iiHtmlBlock)
 
 add_test(NAME Modifier_iiXmlToHTML_ConvertsThroughGetHTML COMMAND iiXmlToHTML_test)
+
+add_executable(DivideBlock_test
+        Test/DivideBlock_test.cpp)
+
+target_link_libraries(DivideBlock_test PRIVATE
+        iiHtmlBlock)
+
+add_test(NAME Modifier_DivideBlock_ClassifiesDisplayBlocks COMMAND DivideBlock_test)
+
+add_executable(CombineBlock_test
+        Test/CombineBlock_test.cpp)
+
+target_link_libraries(CombineBlock_test PRIVATE
+        iiHtmlBlock)
+
+add_test(NAME Modifier_CombineBlock_MergesSelectedBlocks COMMAND CombineBlock_test)
+
+add_executable(FlattenBlock_test
+        Test/FlattenBlock_test.cpp)
+
+target_link_libraries(FlattenBlock_test PRIVATE
+        iiHtmlBlock)
+
+add_test(NAME Modifier_FlattenBlock_LayersDocumentBlocks COMMAND FlattenBlock_test)
