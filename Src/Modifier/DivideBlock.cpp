@@ -13,6 +13,8 @@
 #include <string_view>
 #include <utility>
 
+namespace iiHtmlBlock {
+
 namespace {
 
 std::string ToUtf8String(const QString& value) {
@@ -315,3 +317,5 @@ void DivideBlock::Clear() {
     block_elements_.clear();
     error_.clear();
 }
+
+} // namespace iiHtmlBlock

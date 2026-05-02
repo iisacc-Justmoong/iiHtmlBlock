@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+using namespace iiHtmlBlock;
+
 namespace {
 
 std::vector<DivideBlock::ElementInfo> ParseBlockElements() {

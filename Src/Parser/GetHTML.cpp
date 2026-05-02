@@ -13,6 +13,8 @@
 #include <string_view>
 #include <vector>
 
+namespace iiHtmlBlock {
+
 namespace {
 
 std::string ToUtf8String(const QString& value) {
@@ -317,3 +319,5 @@ void GetHTML::Clear() {
     source_tag_name_.clear();
     error_.clear();
 }
+
+} // namespace iiHtmlBlock

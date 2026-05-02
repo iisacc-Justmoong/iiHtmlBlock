@@ -3,6 +3,8 @@
 #include <cassert>
 #include <string>
 
+using namespace iiHtmlBlock;
+
 namespace {
 
 void KeepsKnownHtmlTags() {

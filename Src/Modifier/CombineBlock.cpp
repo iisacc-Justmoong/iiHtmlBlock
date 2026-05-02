@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+namespace iiHtmlBlock {
+
 namespace {
 
 QString FromUtf8String(const std::string& value) {
@@ -238,3 +240,5 @@ bool CombineBlock::IsValidIndex(std::size_t index) const {
 void CombineBlock::SetError(const std::string& error) {
     error_ = error;
 }
+
+} // namespace iiHtmlBlock

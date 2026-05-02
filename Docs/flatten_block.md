@@ -22,12 +22,12 @@
 ## 사용 예시
 
 ```cpp
-#include "Src/Modifier/FlattenBlock.h"
+#include <iiHtmlBlock>
 
-FlattenBlock flattener;
+iiHtmlBlock::FlattenBlock flattener;
 
 if (flattener.Parse("<XML><section><p>One</p><p>Two</p></section></XML>")) {
-    const FlattenBlock::LayerBlock* layer = flattener.GetLayerBlock();
+    const iiHtmlBlock::FlattenBlock::LayerBlock* layer = flattener.GetLayerBlock();
     // layer->is_block == true
     // layer->elements는 section, p, p 블록을 개별 블록으로 보존한다.
 }

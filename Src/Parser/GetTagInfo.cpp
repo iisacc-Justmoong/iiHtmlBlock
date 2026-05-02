@@ -12,6 +12,8 @@
 #include <string_view>
 #include <vector>
 
+namespace iiHtmlBlock {
+
 namespace {
 
 GetTagInfo::FieldType ConvertFieldType(iiXml::Elements::InlinePropertyType type) {
@@ -294,3 +296,5 @@ void GetTagInfo::Clear() {
     fields_.clear();
     error_.clear();
 }
+
+} // namespace iiHtmlBlock

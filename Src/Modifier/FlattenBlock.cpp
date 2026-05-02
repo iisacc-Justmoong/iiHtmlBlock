@@ -11,6 +11,8 @@
 #include <string>
 #include <string_view>
 
+namespace iiHtmlBlock {
+
 namespace {
 
 std::string ToUtf8String(const QString& value) {
@@ -192,3 +194,5 @@ void FlattenBlock::Clear() {
 void FlattenBlock::SetError(const std::string& error) {
     error_ = error;
 }
+
+} // namespace iiHtmlBlock

@@ -26,6 +26,13 @@ void ExpectContains(const std::string& content, const std::string& token, const 
     }
 }
 
+void ExpectNotContains(const std::string& content, const std::string& token, const char* message) {
+    if (content.find(token) != std::string::npos) {
+        std::cerr << message << '\n';
+        ++failures;
+    }
+}
+
 void ExpectExecutable(const std::string& path, const char* message) {
     struct stat info {};
     if (stat(path.c_str(), &info) != 0 || (info.st_mode & S_IXUSR) == 0) {
@@ -88,6 +95,12 @@ int main() {
         "iiHtmlBlockConfig.cmake.in must declare the Qt 6.8.3 dependency.");
     ExpectContains(config_template, "find_dependency(iiXml 0.1.0 CONFIG REQUIRED)",
         "iiHtmlBlockConfig.cmake.in must declare the iiXml dependency.");
+    ExpectContains(config_template, "PACKAGE_PREFIX_DIR}/../iiXml",
+        "iiHtmlBlockConfig.cmake.in must search the sibling iiXml install prefix.");
+    ExpectContains(config_template, "$ENV{HOME}/.local/iiXml",
+        "iiHtmlBlockConfig.cmake.in must search the default ~/.local/iiXml install prefix.");
+    ExpectContains(config_template, "list(PREPEND CMAKE_PREFIX_PATH",
+        "iiHtmlBlockConfig.cmake.in must prepend dependency prefixes before find_dependency.");
     ExpectContains(config_template, "iiHtmlBlockTargets.cmake",
         "iiHtmlBlockConfig.cmake.in must include exported targets.");
 
@@ -97,8 +110,12 @@ int main() {
         "iiHtmlBlock.h must expose parser public headers.");
     ExpectContains(public_header, "#include \"Src/Modifier/DivideBlock.h\"",
         "iiHtmlBlock.h must expose modifier public headers.");
+    ExpectNotContains(public_header, "void hello",
+        "iiHtmlBlock.h must not expose the placeholder hello function.");
     ExpectContains(umbrella_test, "#include <iiHtmlBlock>",
         "umbrella_header_test.cpp must compile the public angle-bracket include.");
+    ExpectContains(umbrella_test, "iiHtmlBlock::GetHTML",
+        "umbrella_header_test.cpp must use the iiHtmlBlock namespace.");
 
     ExpectContains(docs, "./install.sh", "Docs/install.md must document the install script.");
     ExpectContains(docs, "~/.local/iiHtmlBlock",
@@ -107,6 +124,10 @@ int main() {
         "Docs/install.md must document the iiXml dependency prefix.");
     ExpectContains(docs, "find_package(iiHtmlBlock CONFIG REQUIRED)",
         "Docs/install.md must document CMake package loading.");
+    ExpectContains(docs, "include(\"$ENV{HOME}/.local/iiHtmlBlock/lib/cmake/iiHtmlBlock/iiHtmlBlockConfig.cmake\")",
+        "Docs/install.md must document direct include loading.");
+    ExpectContains(docs, "iiXml prefix를 별도로 추가하지 않아도",
+        "Docs/install.md must document automatic iiXml dependency discovery.");
     ExpectContains(docs, "iiHtmlBlock::iiHtmlBlock",
         "Docs/install.md must document the imported target.");
     ExpectContains(docs, "#include <iiHtmlBlock>",

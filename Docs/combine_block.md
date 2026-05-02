@@ -23,11 +23,10 @@
 ## 사용 예시
 
 ```cpp
-#include "Src/Modifier/DivideBlock.h"
-#include "Src/Modifier/CombineBlock.h"
+#include <iiHtmlBlock>
 
-DivideBlock divider;
-CombineBlock combiner;
+iiHtmlBlock::DivideBlock divider;
+iiHtmlBlock::CombineBlock combiner;
 
 if (divider.Parse("<XML><section><p>One</p><p>Two</p></section></XML>")) {
     combiner.SetBlocks(divider.GetBlockElements());

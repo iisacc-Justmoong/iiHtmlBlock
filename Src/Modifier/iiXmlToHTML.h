@@ -6,6 +6,8 @@
 #include <string>
 #include <string_view>
 
+namespace iiHtmlBlock {
+
 class iiXmlToHTML : public QObject {
     Q_OBJECT
 
@@ -32,3 +34,5 @@ private:
     std::string html_;
     std::string error_;
 };
+
+} // namespace iiHtmlBlock

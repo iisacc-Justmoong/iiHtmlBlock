@@ -10,6 +10,8 @@
 #include <string>
 #include <string_view>
 
+namespace iiHtmlBlock {
+
 namespace {
 
 std::string ToUtf8String(const QString& value) {
@@ -102,3 +104,5 @@ void iiXmlToHTML::Clear() {
     html_.clear();
     error_.clear();
 }
+
+} // namespace iiHtmlBlock

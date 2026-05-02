@@ -8,6 +8,8 @@
 #include <string_view>
 #include <vector>
 
+namespace iiHtmlBlock {
+
 class GetTagInfo : public QObject {
     Q_OBJECT
 
@@ -89,3 +91,5 @@ private:
     std::vector<FieldInfo> fields_;
     std::string error_;
 };
+
+} // namespace iiHtmlBlock

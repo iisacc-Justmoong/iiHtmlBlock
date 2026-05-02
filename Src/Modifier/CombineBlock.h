@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+namespace iiHtmlBlock {
+
 class CombineBlock : public QObject {
     Q_OBJECT
 
@@ -62,3 +64,5 @@ private:
     std::vector<CombinedBlock> combined_blocks_;
     std::string error_;
 };
+
+} // namespace iiHtmlBlock

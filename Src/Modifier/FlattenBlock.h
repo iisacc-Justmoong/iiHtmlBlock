@@ -10,6 +10,8 @@
 #include <string_view>
 #include <vector>
 
+namespace iiHtmlBlock {
+
 class FlattenBlock : public QObject {
     Q_OBJECT
 
@@ -60,3 +62,5 @@ private:
     bool has_layer_;
     std::string error_;
 };
+
+} // namespace iiHtmlBlock

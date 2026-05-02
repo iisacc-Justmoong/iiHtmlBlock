@@ -20,9 +20,9 @@
 ## 사용 예시
 
 ```cpp
-#include "Src/Parser/GetHTML.h"
+#include <iiHtmlBlock>
 
-GetHTML html;
+iiHtmlBlock::GetHTML html;
 
 if (html.Parse("<paragraph>Hello <bold>world</bold></paragraph>")) {
     // html.GetTagName() == "paragraph"

@@ -19,9 +19,9 @@ range를 순회하면서 각 요소가 블록 단위인지 판정하는 Modifier
 ## 사용 예시
 
 ```cpp
-#include "Src/Modifier/DivideBlock.h"
+#include <iiHtmlBlock>
 
-DivideBlock divider;
+iiHtmlBlock::DivideBlock divider;
 
 if (divider.Parse("<XML><section><span>text</span></section></XML>")) {
     // divider.GetElements()[1].tag_name == "section"
@@ -31,7 +31,7 @@ if (divider.Parse("<XML><section><span>text</span></section></XML>")) {
 ```
 
 이미 `GetTagInfo::RangeInfo`를 가지고 있다면 전체 입력을 다시 저장하지 않고
-`DivideBlock::IsBlockElement(range)`로 같은 규칙을 적용할 수 있다.
+`iiHtmlBlock::DivideBlock::IsBlockElement(range)`로 같은 규칙을 적용할 수 있다.
 
 ## 빌드와 검증
 

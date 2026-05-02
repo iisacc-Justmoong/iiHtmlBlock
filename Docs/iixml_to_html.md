@@ -14,9 +14,9 @@ HTML 문자열로 변환하는 Modifier 모듈이다.
 ## 사용 예시
 
 ```cpp
-#include "Src/Modifier/iiXmlToHTML.h"
+#include <iiHtmlBlock>
 
-iiXmlToHTML converter;
+iiHtmlBlock::iiXmlToHTML converter;
 
 if (converter.Convert("<XML><unknownName>value</unknownName></XML>")) {
     // converter.GetHTMLText() == "<XML><unknownName>value</unknownName></XML>"

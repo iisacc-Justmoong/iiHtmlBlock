@@ -19,9 +19,9 @@
 ## 사용 예시
 
 ```cpp
-#include "Src/Parser/GetTagInfo.h"
+#include <iiHtmlBlock>
 
-GetTagInfo info;
+iiHtmlBlock::GetTagInfo info;
 
 if (info.Parse("<XML id=\"main\" order=7><body>Hello</body></XML>")) {
     // info.GetTagName() == "XML"

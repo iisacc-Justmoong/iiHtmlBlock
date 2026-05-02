@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+using namespace iiHtmlBlock;
+
 namespace {
 
 const DivideBlock::ElementInfo* FindElement(

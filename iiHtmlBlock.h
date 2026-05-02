@@ -8,6 +8,4 @@
 #include "Src/Parser/GetHTML.h"
 #include "Src/Parser/GetTagInfo.h"
 
-void hello();
-
 #endif // IIHTMLBLOCK_LIBRARY_H

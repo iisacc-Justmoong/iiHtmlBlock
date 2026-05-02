@@ -6,6 +6,8 @@
 #include <string>
 #include <string_view>
 
+namespace iiHtmlBlock {
+
 class GetHTML : public QObject {
     Q_OBJECT
 
@@ -36,3 +38,5 @@ private:
     std::string source_tag_name_;
     std::string error_;
 };
+
+} // namespace iiHtmlBlock

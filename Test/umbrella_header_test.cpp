@@ -3,12 +3,12 @@
 #include <cassert>
 
 int main() {
-    GetHTML html;
-    GetTagInfo info;
-    iiXmlToHTML converter;
-    DivideBlock divider;
-    CombineBlock combiner;
-    FlattenBlock flattener;
+    iiHtmlBlock::GetHTML html;
+    iiHtmlBlock::GetTagInfo info;
+    iiHtmlBlock::iiXmlToHTML converter;
+    iiHtmlBlock::DivideBlock divider;
+    iiHtmlBlock::CombineBlock combiner;
+    iiHtmlBlock::FlattenBlock flattener;
 
     assert(html.GetHTMLText().empty());
     assert(info.GetTags().empty());

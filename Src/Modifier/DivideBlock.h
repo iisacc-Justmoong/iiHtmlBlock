@@ -10,6 +10,8 @@
 #include <string_view>
 #include <vector>
 
+namespace iiHtmlBlock {
+
 class DivideBlock : public QObject {
     Q_OBJECT
 
@@ -54,3 +56,5 @@ private:
     std::vector<ElementInfo> block_elements_;
     std::string error_;
 };
+
+} // namespace iiHtmlBlock

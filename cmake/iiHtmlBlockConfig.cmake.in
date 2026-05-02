@@ -1,6 +1,22 @@
 @PACKAGE_INIT@
 
 include(CMakeFindDependencyMacro)
+
+get_filename_component(_iiHtmlBlockSiblingIiXmlPrefix "${PACKAGE_PREFIX_DIR}/../iiXml" ABSOLUTE)
+
+foreach(_iiHtmlBlockDependencyPrefix IN ITEMS
+    "${_iiHtmlBlockSiblingIiXmlPrefix}"
+    "$ENV{HOME}/.local/iiXml"
+    "$ENV{HOME}/Qt/6.8.3/macos"
+)
+    if(EXISTS "${_iiHtmlBlockDependencyPrefix}")
+        list(PREPEND CMAKE_PREFIX_PATH "${_iiHtmlBlockDependencyPrefix}")
+    endif()
+endforeach()
+
+unset(_iiHtmlBlockDependencyPrefix)
+unset(_iiHtmlBlockSiblingIiXmlPrefix)
+
 find_dependency(Qt6 6.8.3 EXACT COMPONENTS Core)
 find_dependency(iiXml 0.1.0 CONFIG REQUIRED)
 

@@ -1,7 +1,7 @@
 # iiHtmlBlock
 
 `iiHtmlBlock`은 `iiXml` 입력을 HTML 블록으로 변환하고 조작하기 위한 Qt6.8.3/C++20
-공유 라이브러리이다.
+공유 라이브러리이다. 공개 C++ API는 `iiHtmlBlock` 네임스페이스 아래에 둔다.
 
 ## GetTagInfo
 
@@ -60,8 +60,20 @@
 
 `install.sh`는 iiXml과 같은 방식으로 빌드, 테스트, 설치를 한 번에 수행하며
 iiHtmlBlock을 `~/.local/iiHtmlBlock` 아래에 설치한다.
+설치 후 소비 프로젝트는 일반 설치 레이아웃에서 `iiXml` prefix를 별도로 추가하지 않고
+`find_package(iiHtmlBlock CONFIG REQUIRED)` 또는 설치 config 파일 직접 `include()`로
+가져올 수 있다.
 
 상세 내용은 `Docs/install.md`를 참고한다.
+
+## 사용 예시
+
+```cpp
+#include <iiHtmlBlock>
+
+iiHtmlBlock::GetHTML html;
+iiHtmlBlock::DivideBlock divider;
+```
 
 ## 검증
 
