@@ -28,6 +28,8 @@ add_library(iiHtmlBlock SHARED iiHtmlBlock.cpp
         Src/Parser/GetHTML.h
         Src/Parser/GetTagInfo.cpp
         Src/Parser/GetTagInfo.h
+        Src/Modifier/BlockHTMLSerializer.cpp
+        Src/Modifier/BlockHTMLSerializer.h
         Src/Modifier/BlockRangeTracker.cpp
         Src/Modifier/BlockRangeTracker.h
         Src/Modifier/DivideBlock.cpp
@@ -123,6 +125,14 @@ target_link_libraries(BlockRangeTracker_test PRIVATE
         iiHtmlBlock)
 
 add_test(NAME Modifier_BlockRangeTracker_TracksDocumentRanges COMMAND BlockRangeTracker_test)
+
+add_executable(BlockHTMLSerializer_test
+        Test/BlockHTMLSerializer_test.cpp)
+
+target_link_libraries(BlockHTMLSerializer_test PRIVATE
+        iiHtmlBlock)
+
+add_test(NAME Modifier_BlockHTMLSerializer_SerializesBlockResults COMMAND BlockHTMLSerializer_test)
 
 add_executable(DeleteBlock_test
         Test/DeleteBlock_test.cpp)

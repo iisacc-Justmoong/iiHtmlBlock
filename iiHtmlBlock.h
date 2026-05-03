@@ -1,6 +1,7 @@
 #ifndef IIHTMLBLOCK_LIBRARY_H
 #define IIHTMLBLOCK_LIBRARY_H
 
+#include "Src/Modifier/BlockHTMLSerializer.h"
 #include "Src/Modifier/BlockRangeTracker.h"
 #include "Src/Modifier/CombineBlock.h"
 #include "Src/Modifier/DeleteBlock.h"

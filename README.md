@@ -49,6 +49,14 @@
 
 상세 내용은 `Docs/block_range_tracker.md`를 참고한다.
 
+## BlockHTMLSerializer
+
+`Src/Modifier/BlockHTMLSerializer.*`는 `DivideBlock`의 분할 결과와 `CombineBlock`의
+병합 결과를 HTML 문자열 조각으로 직렬화한다. 중첩 블록은 상위 블록에 포함된 하위 블록을
+중복 출력하지 않고, 병합 결과는 `CombinedBlock::raw`를 논리 블록 조각으로 사용한다.
+
+상세 내용은 `Docs/block_html_serializer.md`를 참고한다.
+
 ## DeleteBlock
 
 `Src/Modifier/DeleteBlock.*`는 `DivideBlock`으로 나뉜 블록 목록에서 지정한 블록을
@@ -91,11 +99,12 @@ iiHtmlBlock을 `~/.local/iiHtmlBlock` 아래에 설치한다.
 iiHtmlBlock::GetHTML html;
 iiHtmlBlock::DivideBlock divider;
 iiHtmlBlock::BlockRangeTracker tracker;
+iiHtmlBlock::BlockHTMLSerializer serializer;
 iiHtmlBlock::DeleteBlock deleter;
 ```
 
 실행 가능한 예제는 `Example/ParsedXmlHtmlExample.cpp`에 있으며, 파싱된 XML range,
-HTML 변환 결과, 블록 분할, range 추적, 블록 삭제, 선택 병합, 전체 레이어링 흐름을 함께 보여준다.
+HTML 변환 결과, 블록 분할, range 추적, 블록 직렬화, 블록 삭제, 선택 병합, 전체 레이어링 흐름을 함께 보여준다.
 상세 내용은 `Docs/examples.md`를 참고한다.
 
 ## 검증

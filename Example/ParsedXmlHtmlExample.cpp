@@ -61,6 +61,10 @@ int main() {
     assert(hello_block != nullptr);
     assert(hello_block->element.tag_name == "p");
 
+    iiHtmlBlock::BlockHTMLSerializer serializer;
+    assert(serializer.SerializeBlocks(blocks));
+    assert(serializer.GetHTMLText().find("<section id=\"intro\">") != std::string::npos);
+
     iiHtmlBlock::DeleteBlock deleter;
     assert(deleter.Parse(html_text));
     assert(deleter.Delete(1));
@@ -73,6 +77,10 @@ int main() {
     assert(combiner.CombineSelected());
     assert(combiner.GetCombinedBlocks().size() == 1);
     assert(combiner.GetCombinedBlocks().front().elements.size() == 2);
+    assert(serializer.SerializeCombinedBlocks(combiner.GetCombinedBlocks()));
+    const std::string combined_html = serializer.GetHTMLText();
+    assert(combined_html.find("<p order=\"1\">") != std::string::npos);
+    assert(combined_html.find("<Custom display=\"block\">") != std::string::npos);
 
     iiHtmlBlock::FlattenBlock flattener;
     flattener.SetBlocks(blocks);
@@ -84,6 +92,7 @@ int main() {
     std::cout << "html=" << html_text << '\n';
     std::cout << "block_count=" << blocks.size() << '\n';
     std::cout << "tracked_hello_block_id=" << hello_block->id << '\n';
+    std::cout << "combined_html=" << combined_html << '\n';
     std::cout << "deleted_html=" << deleter.GetHTMLText() << '\n';
     std::cout << "combined_count=" << combiner.GetCombinedBlocks().size() << '\n';
     std::cout << "layer_block_count=" << flattener.GetLayerBlock()->elements.size() << '\n';
