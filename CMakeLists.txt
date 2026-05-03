@@ -143,3 +143,11 @@ target_link_libraries(umbrella_header_test PRIVATE
         iiHtmlBlock)
 
 add_test(NAME umbrella_header_test COMMAND umbrella_header_test)
+
+add_executable(ParsedXmlHtmlExample
+        Example/ParsedXmlHtmlExample.cpp)
+
+target_link_libraries(ParsedXmlHtmlExample PRIVATE
+        iiHtmlBlock)
+
+add_test(NAME Example_ParsedXmlHtml_HandlesParsedXmlAndHtml COMMAND ParsedXmlHtmlExample)

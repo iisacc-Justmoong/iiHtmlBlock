@@ -75,6 +75,10 @@ iiHtmlBlock::GetHTML html;
 iiHtmlBlock::DivideBlock divider;
 ```
 
+실행 가능한 예제는 `Example/ParsedXmlHtmlExample.cpp`에 있으며, 파싱된 XML range,
+HTML 변환 결과, 블록 분할, 선택 병합, 전체 레이어링 흐름을 함께 보여준다.
+상세 내용은 `Docs/examples.md`를 참고한다.
+
 ## 검증
 
 ```sh
