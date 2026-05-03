@@ -54,6 +54,12 @@ int main() {
     assert(blocks[1].tag_name == "p");
     assert(blocks[2].tag_name == "Custom");
 
+    iiHtmlBlock::DeleteBlock deleter;
+    assert(deleter.Parse(html_text));
+    assert(deleter.Delete(1));
+    assert(deleter.GetDeletedBlocks().front().tag_name == "p");
+    assert(deleter.GetHTMLText().find("<p order=\"1\">") == std::string::npos);
+
     iiHtmlBlock::CombineBlock combiner;
     combiner.SetBlocks(blocks);
     assert(combiner.SelectRange(1, 2));
@@ -70,6 +76,7 @@ int main() {
     std::cout << "root_tag=" << tag_info.GetTagName() << '\n';
     std::cout << "html=" << html_text << '\n';
     std::cout << "block_count=" << blocks.size() << '\n';
+    std::cout << "deleted_html=" << deleter.GetHTMLText() << '\n';
     std::cout << "combined_count=" << combiner.GetCombinedBlocks().size() << '\n';
     std::cout << "layer_block_count=" << flattener.GetLayerBlock()->elements.size() << '\n';
     return 0;

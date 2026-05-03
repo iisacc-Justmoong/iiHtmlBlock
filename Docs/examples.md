@@ -10,6 +10,7 @@ HTML 블록 API를 함께 사용하는 흐름을 보여준다.
 - `iiHtmlBlock::GetTagInfo`로 XML/iiXml 태그 range와 루트 태그를 조회한다.
 - `iiHtmlBlock::GetHTML`로 XML/iiXml 입력을 HTML 문자열로 변환한다.
 - `iiHtmlBlock::DivideBlock`으로 변환된 HTML 요소 중 블록 요소를 판정한다.
+- `iiHtmlBlock::DeleteBlock`으로 선택한 블록을 HTML 문자열에서 제거한다.
 - `iiHtmlBlock::CombineBlock`으로 선택한 여러 블록을 하나의 논리 블록으로 병합 취급한다.
 - `iiHtmlBlock::FlattenBlock`으로 전체 블록을 하나의 상위 레이어 블록으로 묶는다.
 

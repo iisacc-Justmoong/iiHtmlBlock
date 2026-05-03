@@ -2,6 +2,7 @@
 #define IIHTMLBLOCK_LIBRARY_H
 
 #include "Src/Modifier/CombineBlock.h"
+#include "Src/Modifier/DeleteBlock.h"
 #include "Src/Modifier/DivideBlock.h"
 #include "Src/Modifier/FlattenBlock.h"
 #include "Src/Modifier/iiXmlToHTML.h"

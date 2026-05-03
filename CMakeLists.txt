@@ -30,6 +30,8 @@ add_library(iiHtmlBlock SHARED iiHtmlBlock.cpp
         Src/Parser/GetTagInfo.h
         Src/Modifier/DivideBlock.cpp
         Src/Modifier/DivideBlock.h
+        Src/Modifier/DeleteBlock.cpp
+        Src/Modifier/DeleteBlock.h
         Src/Modifier/CombineBlock.cpp
         Src/Modifier/CombineBlock.h
         Src/Modifier/FlattenBlock.cpp
@@ -111,6 +113,14 @@ target_link_libraries(DivideBlock_test PRIVATE
         iiHtmlBlock)
 
 add_test(NAME Modifier_DivideBlock_ClassifiesDisplayBlocks COMMAND DivideBlock_test)
+
+add_executable(DeleteBlock_test
+        Test/DeleteBlock_test.cpp)
+
+target_link_libraries(DeleteBlock_test PRIVATE
+        iiHtmlBlock)
+
+add_test(NAME Modifier_DeleteBlock_RemovesSelectedBlock COMMAND DeleteBlock_test)
 
 add_executable(CombineBlock_test
         Test/CombineBlock_test.cpp)

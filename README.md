@@ -40,6 +40,14 @@
 
 상세 내용은 `Docs/divide_block.md`를 참고한다.
 
+## DeleteBlock
+
+`Src/Modifier/DeleteBlock.*`는 `DivideBlock`으로 나뉜 블록 목록에서 지정한 블록을
+원본 HTML/iiXml 문자열에서 제거한다. 삭제 후 남은 문서를 다시 파싱해 현재 블록 목록을
+갱신하고, 삭제된 블록 스냅샷은 `GetDeletedBlocks()`로 조회할 수 있다.
+
+상세 내용은 `Docs/delete_block.md`를 참고한다.
+
 ## CombineBlock
 
 `Src/Modifier/CombineBlock.*`는 `DivideBlock`으로 나뉜 블록 목록에서 여러 블록을
@@ -73,10 +81,11 @@ iiHtmlBlock을 `~/.local/iiHtmlBlock` 아래에 설치한다.
 
 iiHtmlBlock::GetHTML html;
 iiHtmlBlock::DivideBlock divider;
+iiHtmlBlock::DeleteBlock deleter;
 ```
 
 실행 가능한 예제는 `Example/ParsedXmlHtmlExample.cpp`에 있으며, 파싱된 XML range,
-HTML 변환 결과, 블록 분할, 선택 병합, 전체 레이어링 흐름을 함께 보여준다.
+HTML 변환 결과, 블록 분할, 블록 삭제, 선택 병합, 전체 레이어링 흐름을 함께 보여준다.
 상세 내용은 `Docs/examples.md`를 참고한다.
 
 ## 검증
