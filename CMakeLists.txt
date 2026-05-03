@@ -28,6 +28,8 @@ add_library(iiHtmlBlock SHARED iiHtmlBlock.cpp
         Src/Parser/GetHTML.h
         Src/Parser/GetTagInfo.cpp
         Src/Parser/GetTagInfo.h
+        Src/Modifier/BlockRangeTracker.cpp
+        Src/Modifier/BlockRangeTracker.h
         Src/Modifier/DivideBlock.cpp
         Src/Modifier/DivideBlock.h
         Src/Modifier/DeleteBlock.cpp
@@ -113,6 +115,14 @@ target_link_libraries(DivideBlock_test PRIVATE
         iiHtmlBlock)
 
 add_test(NAME Modifier_DivideBlock_ClassifiesDisplayBlocks COMMAND DivideBlock_test)
+
+add_executable(BlockRangeTracker_test
+        Test/BlockRangeTracker_test.cpp)
+
+target_link_libraries(BlockRangeTracker_test PRIVATE
+        iiHtmlBlock)
+
+add_test(NAME Modifier_BlockRangeTracker_TracksDocumentRanges COMMAND BlockRangeTracker_test)
 
 add_executable(DeleteBlock_test
         Test/DeleteBlock_test.cpp)

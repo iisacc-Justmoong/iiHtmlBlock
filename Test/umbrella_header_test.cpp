@@ -7,6 +7,7 @@ int main() {
     iiHtmlBlock::GetTagInfo info;
     iiHtmlBlock::iiXmlToHTML converter;
     iiHtmlBlock::DivideBlock divider;
+    iiHtmlBlock::BlockRangeTracker tracker;
     iiHtmlBlock::DeleteBlock deleter;
     iiHtmlBlock::CombineBlock combiner;
     iiHtmlBlock::FlattenBlock flattener;
@@ -15,6 +16,7 @@ int main() {
     assert(info.GetTags().empty());
     assert(converter.GetHTMLText().empty());
     assert(divider.GetElements().empty());
+    assert(tracker.GetTrackedBlocks().empty());
     assert(deleter.GetBlocks().empty());
     assert(combiner.GetBlocks().empty());
     assert(!flattener.HasLayer());

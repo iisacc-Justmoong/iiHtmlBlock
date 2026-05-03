@@ -40,6 +40,15 @@
 
 상세 내용은 `Docs/divide_block.md`를 참고한다.
 
+## BlockRangeTracker
+
+`Src/Modifier/BlockRangeTracker.*`는 `DivideBlock`으로 판정한 블록을 원문 range 단위로
+추적한다. 각 블록에 추적 ID를 부여하고, 원문 전체 기준 offset으로 특정 블록을 조회하거나
+주어진 offset/range와 겹치는 블록을 찾을 수 있다. `Update()`는 새 문서를 다시 파싱하면서
+가능한 경우 기존 블록 ID를 유지한다.
+
+상세 내용은 `Docs/block_range_tracker.md`를 참고한다.
+
 ## DeleteBlock
 
 `Src/Modifier/DeleteBlock.*`는 `DivideBlock`으로 나뉜 블록 목록에서 지정한 블록을
@@ -81,11 +90,12 @@ iiHtmlBlock을 `~/.local/iiHtmlBlock` 아래에 설치한다.
 
 iiHtmlBlock::GetHTML html;
 iiHtmlBlock::DivideBlock divider;
+iiHtmlBlock::BlockRangeTracker tracker;
 iiHtmlBlock::DeleteBlock deleter;
 ```
 
 실행 가능한 예제는 `Example/ParsedXmlHtmlExample.cpp`에 있으며, 파싱된 XML range,
-HTML 변환 결과, 블록 분할, 블록 삭제, 선택 병합, 전체 레이어링 흐름을 함께 보여준다.
+HTML 변환 결과, 블록 분할, range 추적, 블록 삭제, 선택 병합, 전체 레이어링 흐름을 함께 보여준다.
 상세 내용은 `Docs/examples.md`를 참고한다.
 
 ## 검증

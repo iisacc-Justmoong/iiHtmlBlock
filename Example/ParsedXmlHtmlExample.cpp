@@ -54,6 +54,13 @@ int main() {
     assert(blocks[1].tag_name == "p");
     assert(blocks[2].tag_name == "Custom");
 
+    iiHtmlBlock::BlockRangeTracker tracker;
+    assert(tracker.Parse(html_text));
+    const iiHtmlBlock::BlockRangeTracker::TrackedBlock* hello_block =
+        tracker.GetInnermostBlockAt(html_text.find("Hello"));
+    assert(hello_block != nullptr);
+    assert(hello_block->element.tag_name == "p");
+
     iiHtmlBlock::DeleteBlock deleter;
     assert(deleter.Parse(html_text));
     assert(deleter.Delete(1));
@@ -76,6 +83,7 @@ int main() {
     std::cout << "root_tag=" << tag_info.GetTagName() << '\n';
     std::cout << "html=" << html_text << '\n';
     std::cout << "block_count=" << blocks.size() << '\n';
+    std::cout << "tracked_hello_block_id=" << hello_block->id << '\n';
     std::cout << "deleted_html=" << deleter.GetHTMLText() << '\n';
     std::cout << "combined_count=" << combiner.GetCombinedBlocks().size() << '\n';
     std::cout << "layer_block_count=" << flattener.GetLayerBlock()->elements.size() << '\n';
