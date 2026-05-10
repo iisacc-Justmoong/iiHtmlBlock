@@ -13,6 +13,14 @@ cmake_args=(
     -DCMAKE_INSTALL_PREFIX="${PREFIX}"
 )
 
+if [[ -f "${BUILD_DIR}/CMakeCache.txt" ]]; then
+    cached_source_dir="$(sed -n 's/^CMAKE_HOME_DIRECTORY:INTERNAL=//p' "${BUILD_DIR}/CMakeCache.txt" | tail -n 1)"
+    if [[ -n "${cached_source_dir}" && "${cached_source_dir}" != "${ROOT_DIR}" ]]; then
+        echo "Removing stale CMake build directory generated for: ${cached_source_dir}"
+        rm -rf "${BUILD_DIR}"
+    fi
+fi
+
 cmake_prefixes=()
 if [[ -d "${QT_PREFIX}/lib/cmake/Qt6" ]]; then
     cmake_prefixes+=("${QT_PREFIX}")

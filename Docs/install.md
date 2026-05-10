@@ -22,6 +22,9 @@
 4. 이전 설치의 `~/.local/iiHtmlBlock/include/iiHtmlBlock/` 디렉터리가 있으면 제거한다.
 5. `cmake --install build --prefix ~/.local/iiHtmlBlock`로 설치한다.
 
+`build/CMakeCache.txt`가 다른 소스 디렉터리에서 생성된 캐시라면, 스크립트는 잘못된
+빌드 산출물이 섞이지 않도록 `build/`를 삭제한 뒤 현재 저장소 루트로 다시 구성한다.
+
 ## 설치 결과
 
 - `~/.local/iiHtmlBlock/lib`: iiHtmlBlock 공유 라이브러리
