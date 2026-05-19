@@ -1,0 +1,13 @@
+Parser_GetTagInfo_ParsesValueAndFields 1 0.00627646
+Parser_GetHTML_ReturnsHtmlTags 1 0.00623776
+Modifier_iiXmlToHTML_ConvertsThroughGetHTML 1 0.00552149
+Modifier_DivideBlock_ClassifiesDisplayBlocks 1 0.00721722
+Modifier_BlockRangeTracker_TracksDocumentRanges 1 0.00821107
+Modifier_BlockHTMLSerializer_SerializesBlockResults 1 0.00782742
+Modifier_DeleteBlock_RemovesSelectedBlock 1 0.00793517
+Modifier_CombineBlock_MergesSelectedBlocks 1 0.00881654
+Modifier_FlattenBlock_LayersDocumentBlocks 1 0.00828992
+install_layout_test 1 0.00329263
+umbrella_header_test 1 0.00560257
+Example_ParsedXmlHtml_HandlesParsedXmlAndHtml 1 0.010754
+---
