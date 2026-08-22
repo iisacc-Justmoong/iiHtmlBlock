@@ -8,22 +8,50 @@ set(CMAKE_AUTOMOC ON)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-if(EXISTS "$ENV{HOME}/Qt/6.8.3/macos/lib/cmake/Qt6/Qt6Config.cmake")
-    list(PREPEND CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.8.3/macos")
+function(iihtmlblock_append_prefix_if_exists prefix)
+    if(EXISTS "${prefix}")
+        list(APPEND CMAKE_PREFIX_PATH "${prefix}")
+        set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}" PARENT_SCOPE)
+    endif()
+endfunction()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+    iihtmlblock_append_prefix_if_exists("$ENV{HOME}/Qt/6.8.3/ios")
+    iihtmlblock_append_prefix_if_exists("$ENV{HOME}/.local/iiXml/platforms/ios")
+    set(_iihtmlblock_platform_iixml_dir "$ENV{HOME}/.local/iiXml/platforms/ios/lib/cmake/iiXml")
+elseif(ANDROID)
+    iihtmlblock_append_prefix_if_exists("$ENV{HOME}/Qt/6.8.3/android_arm64_v8a")
+    iihtmlblock_append_prefix_if_exists("$ENV{HOME}/.local/iiXml/platforms/android")
+    set(_iihtmlblock_platform_iixml_dir "$ENV{HOME}/.local/iiXml/platforms/android/lib/cmake/iiXml")
+elseif(EMSCRIPTEN)
+    iihtmlblock_append_prefix_if_exists("$ENV{HOME}/Qt/6.8.3/wasm_multithread")
+    iihtmlblock_append_prefix_if_exists("$ENV{HOME}/Qt/6.8.3/wasm_singlethread")
+    iihtmlblock_append_prefix_if_exists("$ENV{HOME}/.local/iiXml/platforms/wasm")
+    set(_iihtmlblock_platform_iixml_dir "$ENV{HOME}/.local/iiXml/platforms/wasm/lib/cmake/iiXml")
+else()
+    iihtmlblock_append_prefix_if_exists("$ENV{HOME}/Qt/6.8.3/macos")
+    iihtmlblock_append_prefix_if_exists("$ENV{HOME}/.local/iiXml")
 endif()
 
-if(EXISTS "$ENV{HOME}/.local/iiXml/lib/cmake/iiXml/iiXmlConfig.cmake")
-    list(PREPEND CMAKE_PREFIX_PATH "$ENV{HOME}/.local/iiXml")
+if(DEFINED _iihtmlblock_platform_iixml_dir)
+    if(EXISTS "${_iihtmlblock_platform_iixml_dir}/iiXmlConfig.cmake"
+            AND (NOT DEFINED iiXml_DIR OR iiXml_DIR STREQUAL "" OR iiXml_DIR MATCHES "-NOTFOUND$"))
+        set(iiXml_DIR "${_iihtmlblock_platform_iixml_dir}" CACHE PATH
+            "iiXml target platform package directory" FORCE)
+    endif()
 endif()
 
-if(EXISTS "$ENV{HOME}/.local/lib/cmake/iiXml/iiXmlConfig.cmake")
-    list(PREPEND CMAKE_PREFIX_PATH "$ENV{HOME}/.local")
-endif()
+iihtmlblock_append_prefix_if_exists("$ENV{HOME}/.local")
 
 find_package(Qt6 6.8.3 EXACT REQUIRED COMPONENTS Core)
 find_package(iiXml 0.1.0 REQUIRED CONFIG)
 
-add_library(iiHtmlBlock SHARED iiHtmlBlock.cpp
+set(IIHTMLBLOCK_LIBRARY_TYPE SHARED)
+if(EMSCRIPTEN)
+    set(IIHTMLBLOCK_LIBRARY_TYPE STATIC)
+endif()
+
+add_library(iiHtmlBlock ${IIHTMLBLOCK_LIBRARY_TYPE} iiHtmlBlock.cpp
         Src/Parser/GetHTML.cpp
         Src/Parser/GetHTML.h
         Src/Parser/GetTagInfo.cpp
@@ -78,6 +106,12 @@ write_basic_package_version_file(
         ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfigVersion.cmake
         VERSION ${PROJECT_VERSION}
         COMPATIBILITY SameMajorVersion)
+
+write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfigVersionRoot.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+        ARCH_INDEPENDENT)
 
 install(FILES
         ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfig.cmake
