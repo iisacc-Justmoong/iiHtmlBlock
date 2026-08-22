@@ -1,0 +1,16 @@
+/home/ymy/.local/iiHtmlBlock/lib/libiiHtmlBlock.so
+/home/ymy/.local/iiHtmlBlock/include/iiHtmlBlock
+/home/ymy/.local/iiHtmlBlock/include/iiHtmlBlock.h
+/home/ymy/.local/iiHtmlBlock/include/Src/Modifier/CombineBlock.h
+/home/ymy/.local/iiHtmlBlock/include/Src/Modifier/BlockRangeTracker.h
+/home/ymy/.local/iiHtmlBlock/include/Src/Modifier/BlockHTMLSerializer.h
+/home/ymy/.local/iiHtmlBlock/include/Src/Modifier/DeleteBlock.h
+/home/ymy/.local/iiHtmlBlock/include/Src/Modifier/iiXmlToHTML.h
+/home/ymy/.local/iiHtmlBlock/include/Src/Modifier/DivideBlock.h
+/home/ymy/.local/iiHtmlBlock/include/Src/Modifier/FlattenBlock.h
+/home/ymy/.local/iiHtmlBlock/include/Src/Parser/GetHTML.h
+/home/ymy/.local/iiHtmlBlock/include/Src/Parser/GetTagInfo.h
+/home/ymy/.local/iiHtmlBlock/lib/cmake/iiHtmlBlock/iiHtmlBlockTargets.cmake
+/home/ymy/.local/iiHtmlBlock/lib/cmake/iiHtmlBlock/iiHtmlBlockTargets-noconfig.cmake
+/home/ymy/.local/iiHtmlBlock/lib/cmake/iiHtmlBlock/iiHtmlBlockConfig.cmake
+/home/ymy/.local/iiHtmlBlock/lib/cmake/iiHtmlBlock/iiHtmlBlockConfigVersion.cmake
