@@ -114,6 +114,8 @@ int main() {
     ExpectContains(install_script, "-DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO",
         "install.sh must disable code signing for the iOS library package build.");
 
+    ExpectContains(cmake_lists, "cmake_minimum_required(VERSION 3.24)",
+        "CMakeLists.txt must require the minimum version that supports cmake --fresh.");
     ExpectContains(cmake_lists, "include(GNUInstallDirs)",
         "CMakeLists.txt must use GNUInstallDirs for install destinations.");
     ExpectContains(cmake_lists, "set(IIHTMLBLOCK_LIBRARY_TYPE STATIC)",
@@ -198,6 +200,8 @@ int main() {
         "Docs/install.md must document the iiXml dependency prefix.");
     ExpectContains(docs, "find_package(iiHtmlBlock CONFIG REQUIRED)",
         "Docs/install.md must document CMake package loading.");
+    ExpectContains(docs, "CMake 3.24",
+        "Docs/install.md must document the minimum supported CMake version.");
     ExpectContains(docs, "include(\"$ENV{HOME}/.local/iiHtmlBlock/lib/cmake/iiHtmlBlock/iiHtmlBlockConfig.cmake\")",
         "Docs/install.md must document direct include loading.");
     ExpectContains(docs, "iiXml prefix를 별도로 추가하지 않아도",
