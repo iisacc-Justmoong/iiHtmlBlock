@@ -85,8 +85,8 @@
 
 `install.sh`는 iiXml과 같은 방식으로 빌드, 테스트, 설치를 한 번에 수행하며
 iiHtmlBlock을 macOS, iOS, Android, WASM 패키지로 설치한다. macOS 호환 root prefix는
-`~/.local/iiHtmlBlock`이고, 플랫폼별 패키지는
-`~/.local/iiHtmlBlock/platforms/<platform>`에 둔다.
+`~/.local/SDK/iiHtmlBlock`이고, 플랫폼별 패키지는
+`~/.local/SDK/iiHtmlBlock/platforms/<platform>`에 둔다.
 설치 후 소비 프로젝트는 일반 설치 레이아웃에서 `iiXml` prefix를 별도로 추가하지 않고
 `find_package(iiHtmlBlock CONFIG REQUIRED)` 또는 설치 config 파일 직접 `include()`로
 가져올 수 있다. root config는 CMake target system에 대응하는 플랫폼 패키지로 위임해

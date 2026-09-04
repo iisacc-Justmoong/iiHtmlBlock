@@ -61,8 +61,8 @@ int main() {
 
     ExpectExecutableScriptHeader(install_script);
     ExpectExecutable(install_script_path, "install.sh must be executable.");
-    ExpectContains(install_script, "PREFIX=\"${HOME}/.local/iiHtmlBlock\"",
-        "install.sh must install to ~/.local/iiHtmlBlock.");
+    ExpectContains(install_script, "PREFIX=\"${HOME}/.local/SDK/iiHtmlBlock\"",
+        "install.sh must install to ~/.local/SDK/iiHtmlBlock.");
     ExpectContains(install_script, "INSTALL_PLATFORMS=\"${IIHTMLBLOCK_INSTALL_PLATFORMS:-macos,ios,android,wasm}\"",
         "install.sh must install all four maintained platform packages by default.");
     ExpectContains(install_script, "BUILD_DIR=\"${ROOT_DIR}/build\"",
@@ -77,9 +77,9 @@ int main() {
         "install.sh must publish a WASM platform package.");
     ExpectContains(install_script, "IOS_TOOLCHAIN_FILE=\"${IOS_QT_PREFIX}/lib/cmake/Qt6/qt.toolchain.cmake\"",
         "install.sh must configure iOS through the Qt iOS toolchain.");
-    ExpectContains(install_script, "IIXML_PREFIX=\"${HOME}/.local/iiXml\"",
+    ExpectContains(install_script, "IIXML_PREFIX=\"${HOME}/.local/SDK/iiXml\"",
         "install.sh must look for the iiXml install prefix.");
-    ExpectContains(install_script, "IOS_IIXML_PREFIX=\"${HOME}/.local/iiXml/platforms/ios\"",
+    ExpectContains(install_script, "IOS_IIXML_PREFIX=\"${HOME}/.local/SDK/iiXml/platforms/ios\"",
         "install.sh must look for the iiXml iOS install prefix.");
     ExpectContains(install_script, "IOS_IIXML_DIR=\"${IOS_IIXML_PREFIX}/lib/cmake/iiXml\"",
         "install.sh must know the iiXml iOS package config directory.");
@@ -94,7 +94,7 @@ int main() {
     ExpectContains(install_script, "wasm) extension=\"a\"",
         "install.sh must verify the WASM static archive.");
     ExpectContains(install_script, "cmake --install \"${MACOS_BUILD_DIR}\" --prefix \"${MACOS_PREFIX}\"",
-        "install.sh must run cmake install with the ~/.local/iiHtmlBlock prefix.");
+        "install.sh must run cmake install with the ~/.local/SDK/iiHtmlBlock prefix.");
     ExpectContains(install_script, "cmake --install \"${MACOS_BUILD_DIR}\" --prefix \"${MACOS_PLATFORM_PREFIX}\"",
         "install.sh must run cmake install with the macOS platform prefix.");
     ExpectContains(install_script, "iiHtmlBlockConfigVersionRoot.cmake",
@@ -122,6 +122,12 @@ int main() {
         "WASM must use a composable static archive instead of an Emscripten pseudo-shared library.");
     ExpectContains(cmake_lists, "add_library(iiHtmlBlock ${IIHTMLBLOCK_LIBRARY_TYPE}",
         "CMakeLists.txt must build through the platform-selected library type.");
+    ExpectContains(cmake_lists, "PROJECT_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT",
+        "Default CMake installs must use the SDK prefix while respecting explicit overrides.");
+    ExpectContains(cmake_lists, "USERPROFILE",
+        "Windows user profiles must provide the default prefix when HOME is empty.");
+    ExpectContains(cmake_lists, ".local/SDK/iiHtmlBlock",
+        "CMake must use the SDK package installation root.");
     ExpectContains(cmake_lists, "install(TARGETS iiHtmlBlock",
         "CMakeLists.txt must install the iiHtmlBlock library target.");
     ExpectContains(cmake_lists, "EXPORT iiHtmlBlockTargets",
@@ -155,7 +161,7 @@ int main() {
         "iiHtmlBlockConfig.cmake.in must redirect root package consumers to platform packages.");
     ExpectContains(config_template, "${_iiHtmlBlockCurrentPrefixParent}/${_iiHtmlBlockTargetPlatform}/lib/cmake/iiHtmlBlock/iiHtmlBlockConfig.cmake",
         "iiHtmlBlockConfig.cmake.in must redirect mismatched direct platform package consumers.");
-    ExpectContains(config_template, "$ENV{HOME}/.local/iiXml/platforms/${_iiHtmlBlockTargetPlatform}",
+    ExpectContains(config_template, "$ENV{HOME}/.local/SDK/iiXml/platforms/${_iiHtmlBlockTargetPlatform}",
         "iiHtmlBlockConfig.cmake.in must search platform iiXml dependency prefixes.");
     ExpectContains(config_template, "set(iiXml_DIR \"${_iiHtmlBlockPlatformIiXmlDir}\" CACHE PATH",
         "iiHtmlBlockConfig.cmake.in must pin platform iiXml package discovery.");
@@ -163,12 +169,16 @@ int main() {
         "iiHtmlBlockConfig.cmake.in must search the mapped platform Qt prefix.");
     ExpectContains(config_template, "PACKAGE_PREFIX_DIR}/../iiXml",
         "iiHtmlBlockConfig.cmake.in must search the sibling iiXml install prefix.");
-    ExpectContains(config_template, "$ENV{HOME}/.local/iiXml",
-        "iiHtmlBlockConfig.cmake.in must search the default ~/.local/iiXml install prefix.");
+    ExpectContains(config_template, "$ENV{HOME}/.local/SDK/iiXml",
+        "iiHtmlBlockConfig.cmake.in must search the default ~/.local/SDK/iiXml install prefix.");
     ExpectContains(config_template, "list(PREPEND CMAKE_PREFIX_PATH",
         "iiHtmlBlockConfig.cmake.in must prepend dependency prefixes before find_dependency.");
     ExpectContains(config_template, "iiHtmlBlockTargets.cmake",
         "iiHtmlBlockConfig.cmake.in must include exported targets.");
+    ExpectContains(config_template, "CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES",
+        "The package must detect when LIBRARY_PATH suppresses CMake's automatic runtime search path.");
+    ExpectContains(config_template, "INTERFACE_LINK_OPTIONS",
+        "The package must restore the omitted macOS runtime search path for consumers.");
     ExpectContains(docs, "32-bit WASM",
         "Docs/install.md must document architecture-independent root dispatch.");
 
@@ -186,23 +196,23 @@ int main() {
         "umbrella_header_test.cpp must use the iiHtmlBlock namespace.");
 
     ExpectContains(docs, "./install.sh", "Docs/install.md must document the install script.");
-    ExpectContains(docs, "~/.local/iiHtmlBlock",
-        "Docs/install.md must document the fixed ~/.local/iiHtmlBlock install prefix.");
-    ExpectContains(docs, "~/.local/iiHtmlBlock/platforms/ios",
+    ExpectContains(docs, "~/.local/SDK/iiHtmlBlock",
+        "Docs/install.md must document the fixed ~/.local/SDK/iiHtmlBlock install prefix.");
+    ExpectContains(docs, "~/.local/SDK/iiHtmlBlock/platforms/ios",
         "Docs/install.md must document the iOS platform install prefix.");
-    ExpectContains(docs, "~/.local/iiHtmlBlock/platforms/android",
+    ExpectContains(docs, "~/.local/SDK/iiHtmlBlock/platforms/android",
         "Docs/install.md must document the Android platform install prefix.");
-    ExpectContains(docs, "~/.local/iiHtmlBlock/platforms/wasm",
+    ExpectContains(docs, "~/.local/SDK/iiHtmlBlock/platforms/wasm",
         "Docs/install.md must document the WASM platform install prefix.");
     ExpectContains(docs, "IIHTMLBLOCK_INSTALL_PLATFORMS",
         "Docs/install.md must document platform override.");
-    ExpectContains(docs, "~/.local/iiXml",
+    ExpectContains(docs, "~/.local/SDK/iiXml",
         "Docs/install.md must document the iiXml dependency prefix.");
     ExpectContains(docs, "find_package(iiHtmlBlock CONFIG REQUIRED)",
         "Docs/install.md must document CMake package loading.");
     ExpectContains(docs, "CMake 3.24",
         "Docs/install.md must document the minimum supported CMake version.");
-    ExpectContains(docs, "include(\"$ENV{HOME}/.local/iiHtmlBlock/lib/cmake/iiHtmlBlock/iiHtmlBlockConfig.cmake\")",
+    ExpectContains(docs, "include(\"$ENV{HOME}/.local/SDK/iiHtmlBlock/lib/cmake/iiHtmlBlock/iiHtmlBlockConfig.cmake\")",
         "Docs/install.md must document direct include loading.");
     ExpectContains(docs, "iiXml prefix를 별도로 추가하지 않아도",
         "Docs/install.md must document automatic iiXml dependency discovery.");

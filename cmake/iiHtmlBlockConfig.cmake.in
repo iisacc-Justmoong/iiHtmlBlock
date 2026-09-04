@@ -62,7 +62,7 @@ if(NOT _iiHtmlBlockTargetPlatform STREQUAL "")
     list(APPEND _iiHtmlBlockDependencyPrefixes
         "${_iiHtmlBlockTargetQtPrefix}"
         "${_iiHtmlBlockPlatformSiblingIiXmlPrefix}"
-        "$ENV{HOME}/.local/iiXml/platforms/${_iiHtmlBlockTargetPlatform}")
+        "$ENV{HOME}/.local/SDK/iiXml/platforms/${_iiHtmlBlockTargetPlatform}")
 endif()
 
 if(NOT _iiHtmlBlockTargetPlatform STREQUAL "")
@@ -79,7 +79,7 @@ endif()
 
 list(APPEND _iiHtmlBlockDependencyPrefixes
     "${_iiHtmlBlockSiblingIiXmlPrefix}"
-    "$ENV{HOME}/.local/iiXml"
+    "$ENV{HOME}/.local/SDK/iiXml"
     "$ENV{HOME}/Qt/6.8.3/macos")
 
 list(REVERSE _iiHtmlBlockDependencyPrefixes)
@@ -107,3 +107,18 @@ find_dependency(Qt6 6.8.3 EXACT COMPONENTS Core)
 find_dependency(iiXml 0.1.0 CONFIG REQUIRED)
 
 include("${CMAKE_CURRENT_LIST_DIR}/iiHtmlBlockTargets.cmake")
+
+# LIBRARY_PATH makes CMake treat package directories as implicit linker paths.
+# dyld still needs an RPATH when loading an @rpath install name at runtime.
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND TARGET iiHtmlBlock::iiHtmlBlock)
+    get_filename_component(_iiHtmlBlockPackageLibraryDirectory
+        "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
+    list(FIND CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES
+        "${_iiHtmlBlockPackageLibraryDirectory}" _iiHtmlBlockImplicitLinkDirectoryIndex)
+    if(NOT _iiHtmlBlockImplicitLinkDirectoryIndex EQUAL -1)
+        set_property(TARGET iiHtmlBlock::iiHtmlBlock APPEND PROPERTY
+            INTERFACE_LINK_OPTIONS "LINKER:-rpath,${_iiHtmlBlockPackageLibraryDirectory}")
+    endif()
+    unset(_iiHtmlBlockPackageLibraryDirectory)
+    unset(_iiHtmlBlockImplicitLinkDirectoryIndex)
+endif()

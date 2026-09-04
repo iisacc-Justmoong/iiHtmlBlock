@@ -3,19 +3,19 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="${ROOT_DIR}/build"
-PREFIX="${HOME}/.local/iiHtmlBlock"
+PREFIX="${HOME}/.local/SDK/iiHtmlBlock"
 INSTALL_PLATFORMS="${IIHTMLBLOCK_INSTALL_PLATFORMS:-macos,ios,android,wasm}"
 QT_ROOT="${IIHTMLBLOCK_QT_ROOT:-${HOME}/Qt/6.8.3}"
 MACOS_QT_PREFIX="${IIHTMLBLOCK_MACOS_QT_PREFIX:-${QT_ROOT}/macos}"
 IOS_QT_PREFIX="${IIHTMLBLOCK_IOS_QT_PREFIX:-${QT_ROOT}/ios}"
 ANDROID_QT_PREFIX="${IIHTMLBLOCK_ANDROID_QT_PREFIX:-${QT_ROOT}/android_arm64_v8a}"
 WASM_QT_PREFIX="${IIHTMLBLOCK_WASM_QT_PREFIX:-}"
-IIXML_PREFIX="${HOME}/.local/iiXml"
-IOS_IIXML_PREFIX="${HOME}/.local/iiXml/platforms/ios"
+IIXML_PREFIX="${HOME}/.local/SDK/iiXml"
+IOS_IIXML_PREFIX="${HOME}/.local/SDK/iiXml/platforms/ios"
 IOS_IIXML_DIR="${IOS_IIXML_PREFIX}/lib/cmake/iiXml"
-ANDROID_IIXML_PREFIX="${HOME}/.local/iiXml/platforms/android"
+ANDROID_IIXML_PREFIX="${HOME}/.local/SDK/iiXml/platforms/android"
 ANDROID_IIXML_DIR="${ANDROID_IIXML_PREFIX}/lib/cmake/iiXml"
-WASM_IIXML_PREFIX="${HOME}/.local/iiXml/platforms/wasm"
+WASM_IIXML_PREFIX="${HOME}/.local/SDK/iiXml/platforms/wasm"
 WASM_IIXML_DIR="${WASM_IIXML_PREFIX}/lib/cmake/iiXml"
 MACOS_BUILD_DIR="${BUILD_DIR}"
 IOS_BUILD_DIR="${BUILD_DIR}/platforms/ios"
@@ -64,7 +64,7 @@ remove_stale_build_dir() {
         echo "Removing stale CMake build directory: ${build_dir}"
         echo "  cached source: ${cached_source:-unknown}"
         echo "  current source: ${ROOT_DIR}"
-        rm -rf "${build_dir}"
+        rm -rf "${build_dir}" || rm -rf "${build_dir}"
     fi
 }
 
