@@ -117,3 +117,12 @@ cmake -S . -B build
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
+
+## License
+
+SPDX-License-Identifier: AGPL-3.0-only
+
+iiHtmlBlock의 자체 작성 코드와 문서는 GNU Affero General Public License
+버전 3.0 전용으로 배포한다. 라이선스 전문은 [LICENSE](LICENSE)에 있다.
+
+서드파티 코드, 라이브러리, 도구 및 모델 가중치는 각자의 고유 라이선스를 유지한다.
