@@ -8,8 +8,8 @@ macOS 호환 설치 위치는 `~/.local/SDK/iiHtmlBlock`이고, 플랫폼별 설
 ## 전제 조건
 
 - `cmake --fresh`를 지원하는 CMake 3.24 이상이 필요하다.
-- Qt 6.8.3은 `~/Qt/6.8.3/macos` 아래에 설치되어 있어야 한다.
-- iOS 패키지를 만들려면 Qt 6.8.3 iOS kit가 `~/Qt/6.8.3/ios` 아래에 설치되어 있어야 한다.
+- Qt 6.8.3은 `/Volumes/Storage/Qt/6.8.3/macos` 아래에 설치되어 있어야 한다.
+- iOS 패키지를 만들려면 Qt 6.8.3 iOS kit가 `/Volumes/Storage/Qt/6.8.3/ios` 아래에 설치되어 있어야 한다.
 - Android 패키지를 만들려면 Qt Android kit, Android SDK/NDK가 설치되어 있어야 한다.
 - WASM 패키지를 만들려면 Qt WASM kit와 Emscripten SDK가 설치되어 있어야 한다.
 - iiXml은 `~/.local/SDK/iiXml` 아래에 설치되어 있어야 한다.
