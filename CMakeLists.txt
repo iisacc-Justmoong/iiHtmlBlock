@@ -225,3 +225,16 @@ target_link_libraries(ParsedXmlHtmlExample PRIVATE
         iiHtmlBlock)
 
 add_test(NAME Example_ParsedXmlHtml_HandlesParsedXmlAndHtml COMMAND ParsedXmlHtmlExample)
+
+# These executable checks use assert for both validation and parser setup.
+# Release must execute those expressions just as Debug does.
+foreach(_test_target IN ITEMS
+        GetTagInfo_test GetHTML_test iiXmlToHTML_test DivideBlock_test
+        BlockRangeTracker_test BlockHTMLSerializer_test DeleteBlock_test
+        CombineBlock_test FlattenBlock_test umbrella_header_test ParsedXmlHtmlExample)
+    if(MSVC)
+        target_compile_options(${_test_target} PRIVATE /UNDEBUG)
+    else()
+        target_compile_options(${_test_target} PRIVATE -UNDEBUG)
+    endif()
+endforeach()

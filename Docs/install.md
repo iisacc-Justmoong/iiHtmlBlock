@@ -116,6 +116,12 @@ macOS에서는 셸의 `LIBRARY_PATH`에 설치 라이브러리 경로가 포함�
 imported target이 필요한 runtime RPATH를 전달하므로 소비자 실행에 별도의
 `DYLD_LIBRARY_PATH`가 필요하지 않다.
 
+테스트와 `ParsedXmlHtmlExample`은 Release에서도 assertion을 실행한다. 이 실행 파일들은
+assertion 안에서 파서 초기화와 결과 검사를 수행하므로 `NDEBUG`로 이를 생략하면 검사가
+실행되지 않거나 비어 있는 결과를 참조하게 된다. 라이브러리의 Release 최적화 설정은 유지하며,
+실행 파일에만 `NDEBUG` 해제를 적용한다. `BlockHTMLSerializer_test`는 assertion이 꺼진
+구성을 컴파일 단계에서도 거부한다.
+
 기본 SDK prefix는 이 저장소를 단독 구성할 때만 적용한다. `add_subdirectory()`로
 포함한 상위 프로젝트의 설치 prefix는 유지하고, `HOME`이 비어 있으면
 `USERPROFILE`을 사용자 홈으로 사용한다.

@@ -6,6 +6,10 @@
 #include <string>
 #include <vector>
 
+#ifdef NDEBUG
+#error "iiHtmlBlock executable checks must keep assertions enabled in Release."
+#endif
+
 using namespace iiHtmlBlock;
 
 namespace {
