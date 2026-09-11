@@ -92,6 +92,12 @@ iiHtmlBlock을 macOS, iOS, Android, WASM 패키지로 설치한다. macOS 호환
 가져올 수 있다. root config는 CMake target system에 대응하는 플랫폼 패키지로 위임해
 호스트 dylib가 교차 빌드에 잘못 링크되지 않도록 한다.
 
+소비자가 지정한 `iiXml_DIR` 또는 이미 가져온 `iiXml::iiXml` 타깃은 보존한다.
+자동 플랫폼 탐색은 명시적 선택이 없을 때만 사용하며, 새 iiFileProvider CRUD 계층을
+사용하는 XML 패키지를 이전 `.local` 설치로 되돌리지 않는다.
+`installed_dependency_selection_test`는 실제 설치 패키지를 별도 CMake 소비자로 읽어
+이 선택이 유지되는지 확인한다.
+
 상세 내용은 `Docs/install.md`를 참고한다.
 
 ## 사용 예시

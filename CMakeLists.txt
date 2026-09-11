@@ -218,6 +218,15 @@ target_link_libraries(umbrella_header_test PRIVATE
 
 add_test(NAME umbrella_header_test COMMAND umbrella_header_test)
 
+add_test(NAME installed_dependency_selection_test
+        COMMAND ${CMAKE_COMMAND}
+                "-DIIHTMLBLOCK_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}"
+                "-DIIXML_DIR=${iiXml_DIR}"
+                "-DIIFILEPROVIDER_DIR=${iiFileProvider_DIR}"
+                "-DQT6_DIR=${Qt6_DIR}"
+                "-DOSX_SYSROOT=${CMAKE_OSX_SYSROOT}"
+                -P "${CMAKE_CURRENT_SOURCE_DIR}/Test/InstalledDependencySelection.cmake")
+
 add_executable(ParsedXmlHtmlExample
         Example/ParsedXmlHtmlExample.cpp)
 

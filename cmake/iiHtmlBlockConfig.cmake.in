@@ -65,7 +65,9 @@ if(NOT _iiHtmlBlockTargetPlatform STREQUAL "")
         "$ENV{HOME}/.local/SDK/iiXml/platforms/${_iiHtmlBlockTargetPlatform}")
 endif()
 
-if(NOT _iiHtmlBlockTargetPlatform STREQUAL "")
+if(NOT _iiHtmlBlockTargetPlatform STREQUAL ""
+        AND NOT TARGET iiXml::iiXml
+        AND (NOT DEFINED iiXml_DIR OR iiXml_DIR STREQUAL "" OR iiXml_DIR MATCHES "-NOTFOUND$"))
     foreach(_iiHtmlBlockPlatformDependencyPrefix IN LISTS _iiHtmlBlockDependencyPrefixes)
         set(_iiHtmlBlockPlatformIiXmlDir
             "${_iiHtmlBlockPlatformDependencyPrefix}/lib/cmake/iiXml")
