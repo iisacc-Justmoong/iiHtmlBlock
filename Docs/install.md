@@ -1,5 +1,8 @@
 # 설치
 
+Windows의 설치 레이아웃 검증은 POSIX 실행 비트 대신 Bash 스크립트 헤더를
+검사한다. 네이티브 패키지는 CMake configure, build, CTest, install 순서로 검증한다.
+
 `install.sh`는 기본적으로 iiHtmlBlock을 macOS, iOS, Android, WASM 플랫폼 패키지로 설치한다.
 macOS 호환 설치 위치는 `~/.local/SDK/iiHtmlBlock`이고, 플랫폼별 설치물은
 `~/.local/SDK/iiHtmlBlock/platforms/<platform>` 아래에 둔다. 설치 위치는 고정이며
@@ -125,3 +128,8 @@ assertion 안에서 파서 초기화와 결과 검사를 수행하므로 `NDEBUG
 기본 SDK prefix는 이 저장소를 단독 구성할 때만 적용한다. `add_subdirectory()`로
 포함한 상위 프로젝트의 설치 prefix는 유지하고, `HOME`이 비어 있으면
 `USERPROFILE`을 사용자 홈으로 사용한다.
+# Static linkage on Windows
+
+Use `-DIIHTMLBLOCK_BUILD_SHARED=OFF` when linking against a static iiXml package.
+This avoids exporting iiXml symbols again from an intermediate MinGW DLL.
+Shared libraries remain the default; WebAssembly always uses static linkage.

@@ -34,11 +34,15 @@ void ExpectNotContains(const std::string& content, const std::string& token, con
 }
 
 void ExpectExecutable(const std::string& path, const char* message) {
+#ifdef _WIN32
+    ExpectContains(ReadFile(path), "#!/usr/bin/env bash", message);
+#else
     struct stat info {};
     if (stat(path.c_str(), &info) != 0 || (info.st_mode & S_IXUSR) == 0) {
         std::cerr << message << '\n';
         ++failures;
     }
+#endif
 }
 
 void ExpectExecutableScriptHeader(const std::string& content) {
@@ -60,6 +64,8 @@ int main() {
     const std::string umbrella_test = ReadFile(root + "/Test/umbrella_header_test.cpp");
 
     ExpectExecutableScriptHeader(install_script);
+    ExpectContains(cmake_lists, "option(IIHTMLBLOCK_BUILD_SHARED", "Consumers must be able to select a static library.");
+    ExpectContains(cmake_lists, "if(IIHTMLBLOCK_BUILD_SHARED AND NOT EMSCRIPTEN)", "Shared selection must preserve Wasm static linking.");
     ExpectExecutable(install_script_path, "install.sh must be executable.");
     ExpectContains(install_script, "PREFIX=\"${HOME}/.local/SDK/iiHtmlBlock\"",
         "install.sh must install to ~/.local/SDK/iiHtmlBlock.");

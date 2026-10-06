@@ -56,9 +56,10 @@ iihtmlblock_append_prefix_if_exists("$ENV{HOME}/.local/SDK")
 find_package(Qt6 6.8.3 EXACT REQUIRED COMPONENTS Core)
 find_package(iiXml 0.1.0 REQUIRED CONFIG)
 
-set(IIHTMLBLOCK_LIBRARY_TYPE SHARED)
-if(EMSCRIPTEN)
-    set(IIHTMLBLOCK_LIBRARY_TYPE STATIC)
+option(IIHTMLBLOCK_BUILD_SHARED "Build iiHtmlBlock as a shared library." ON)
+set(IIHTMLBLOCK_LIBRARY_TYPE STATIC)
+if(IIHTMLBLOCK_BUILD_SHARED AND NOT EMSCRIPTEN)
+    set(IIHTMLBLOCK_LIBRARY_TYPE SHARED)
 endif()
 
 add_library(iiHtmlBlock ${IIHTMLBLOCK_LIBRARY_TYPE} iiHtmlBlock.cpp
