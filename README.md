@@ -1,106 +1,74 @@
 # iiHtmlBlock
 
-`iiHtmlBlock`은 `iiXml` 입력을 HTML 블록으로 변환하고 조작하기 위한 Qt6.8.3/C++20
-공유 라이브러리이다. 공개 C++ API는 `iiHtmlBlock` 네임스페이스 아래에 둔다.
+`iiHtmlBlock` is a Qt6.8.3/C++20 shared library for converting `iiXml` input into HTML blocks and manipulating them. The public C++ API resides under the `iiHtmlBlock` namespace.
 
 ## GetTagInfo
 
-`Src/Parser/GetTagInfo.*`는 XML 문자열을 받아 `iiXml::Parser::TagParser`와 호환되는
-방식으로 첫 루트 태그의 값과 필드를 내부 상태로 저장한다. 전체 태그 계층은
-`GetTags()`/`GetRoot()`로 조회하고, 첫 루트 태그의 값과 필드는 `GetValue()`와
-`GetFields()`로 조회한다. 교차 종료처럼 트리만으로 표현하기 어려운 iiXml 구조는
-`GetRanges()`의 원본 offset range로 보존한다. 본문 태그 앞의 XML 선언과 DOCTYPE은
-태그 range가 아니므로 파싱 전에 제거한다.
+`Src/Parser/GetTagInfo.*` accepts an XML string and stores the first root tag's value and fields as internal state in a way compatible with `iiXml::Parser::TagParser`. The full tag hierarchy is queried through `GetTags()`/`GetRoot()`, while the first root tag's value and fields are queried through `GetValue()` and `GetFields()`. iiXml structures that are difficult to represent with a tree alone, such as crossing closing tags, are preserved as the original offset ranges in `GetRanges()`. The XML declaration and DOCTYPE preceding the body tags are not tag ranges and are therefore removed before parsing.
 
-상세 내용은 `Docs/get_tag_info.md`를 참고한다.
+See `Docs/get_tag_info.md` for details.
 
 ## GetHTML
 
-`Src/Parser/GetHTML.*`는 `iiXml`을 비롯한 XML 문자열을 받아 HTML 태그 문자열로
-판정한다. 태그명 변환은 하지 않으며, `paragraph`, `XML`, `CustomTag` 같은 태그도
-그 이름 그대로 커스텀 HTML 태그로 반환한다. 알 수 없는 태그도
-입력 이름 그대로 유지한다. 예를 들어 `unknownName`은 `<unknownName>...</unknownName>`,
-`OtherWidget`은 `<OtherWidget>...</OtherWidget>`로 반환한다.
+`Src/Parser/GetHTML.*` accepts `iiXml` and other XML strings and determines them as HTML tag strings. Tag names are not transformed, and tags like `paragraph`, `XML`, `CustomTag` are also returned as custom HTML tags with their original names. Unknown tags are also kept with their input names. For example, `unknownName` is returned as `<unknownName>...</unknownName>`, and `OtherWidget` is returned as `<OtherWidget>...</OtherWidget>`.
 
-상세 내용은 `Docs/get_html.md`를 참고한다.
+See `Docs/get_html.md` for details.
 
 ## iiXmlToHTML
 
-`Src/Modifier/iiXmlToHTML.*`는 `GetHTML`의 판정 규칙을 사용해 iiXml/XML 입력을 HTML
-문자열로 변환한다. 태그명은 변환하지 않고 입력 이름 그대로 유지한다.
+`Src/Modifier/iiXmlToHTML.*` uses the determination rules of `GetHTML` to transform iiXml / XML input into HTML string. Tag names are not transformed and are kept with their input names.
 
-상세 내용은 `Docs/iixml_to_html.md`를 참고한다.
+See `Docs/iixml_to_html.md` for details.
 
 ## DivideBlock
 
-`Src/Modifier/DivideBlock.*`는 `GetTagInfo`가 파싱한 태그 range를 기준으로 각 요소가
-블록 단위인지 판정한다. 기본 HTML 블록 태그를 인식하고, `style="display: block"`이나
-`display=block` 같은 명시적 display 값은 기본 태그 판정보다 우선한다. 알 수 없는
-커스텀 태그는 명시적 display 값이 있을 때만 블록으로 본다.
+`Src/Modifier/DivideBlock.*` determines whether each element is a block unit based on the tag range parsed by `GetTagInfo`. It recognizes the default HTML block tag, and explicit display values like `style="display: block"` or `display=block` take precedence over the default tag determination. Unknown custom tags are considered blocks only when an explicit display value exists.
 
-상세 내용은 `Docs/divide_block.md`를 참고한다.
+See `Docs/divide_block.md` for details.
 
 ## BlockRangeTracker
 
-`Src/Modifier/BlockRangeTracker.*`는 `DivideBlock`으로 판정한 블록을 원문 range 단위로
-추적한다. 각 블록에 추적 ID를 부여하고, 원문 전체 기준 offset으로 특정 블록을 조회하거나
-주어진 offset/range와 겹치는 블록을 찾을 수 있다. `Update()`는 새 문서를 다시 파싱하면서
-가능한 경우 기존 블록 ID를 유지한다.
+`Src/Modifier/BlockRangeTracker.*` tracks blocks determined by `DivideBlock` in units of the original text range. Each block is assigned a tracking ID, and a specific block can be looked up or blocks overlapping a given offset/range can be found based on the offset relative to the entire original text. `Update()` maintains existing block IDs when possible while reparsing the new document.
 
-상세 내용은 `Docs/block_range_tracker.md`를 참고한다.
+See `Docs/block_range_tracker.md` for details.
 
 ## BlockHTMLSerializer
 
-`Src/Modifier/BlockHTMLSerializer.*`는 `DivideBlock`의 분할 결과와 `CombineBlock`의
-병합 결과를 HTML 문자열 조각으로 직렬화한다. 중첩 블록은 상위 블록에 포함된 하위 블록을
-중복 출력하지 않고, 병합 결과는 `CombinedBlock::raw`를 논리 블록 조각으로 사용한다.
+`Src/Modifier/BlockHTMLSerializer.*` serializes the split results of `DivideBlock` and the merge results of `CombineBlock` into HTML string fragments. Nested blocks are not duplicated; they are output only once as included in the parent block, and the merge results are used as logical block fragments `CombinedBlock::raw`.
 
-상세 내용은 `Docs/block_html_serializer.md`를 참고한다.
+See `Docs/block_html_serializer.md` for details.
 
 ## DeleteBlock
 
-`Src/Modifier/DeleteBlock.*`는 `DivideBlock`으로 나뉜 블록 목록에서 지정한 블록을
-원본 HTML/iiXml 문자열에서 제거한다. 삭제 후 남은 문서를 다시 파싱해 현재 블록 목록을
-갱신하고, 삭제된 블록 스냅샷은 `GetDeletedBlocks()`로 조회할 수 있다.
+`Src/Modifier/DeleteBlock.*` removes the specified block from the original HTML / iiXml string in the block list divided by `DivideBlock`. After deletion, the remaining document is reparsed to update the current block list, and the deleted block snapshot can be looked up at `GetDeletedBlocks()`.
 
-상세 내용은 `Docs/delete_block.md`를 참고한다.
+See `Docs/delete_block.md` for details.
 
 ## CombineBlock
 
-`Src/Modifier/CombineBlock.*`는 `DivideBlock`으로 나뉜 블록 목록에서 여러 블록을
-선택하고, 선택 묶음을 하나의 논리 블록으로 병합 취급한다. 병합은 원본 HTML을
-재작성하지 않고 선택 인덱스와 선택된 블록 스냅샷을 `CombinedBlock`으로 저장한다.
+`Src/Modifier/CombineBlock.*` selects multiple blocks from the block list divided by `DivideBlock` and treats the selected group as a single logical block for merging. Merging saves the selection indices and the selected block snapshots to `CombinedBlock` without rewriting the original HTML.
 
-상세 내용은 `Docs/combine_block.md`를 참고한다.
+See `Docs/combine_block.md` for details.
 
 ## FlattenBlock
 
-`Src/Modifier/FlattenBlock.*`는 문서의 모든 블록을 유지한 채 하나의 상위 그룹 블록
-레이어로 묶는다. 각 블록은 개별 `ElementInfo`로 남아 있으면서, 동시에 단일
-`LayerBlock` 그룹에 포함된 블록으로 취급된다.
+`Src/Modifier/FlattenBlock.*` groups all blocks of the document into a single parent group block layer while maintaining each block. Each block remains as an individual `ElementInfo` while simultaneously being treated as a block included in a single `LayerBlock` group.
 
-상세 내용은 `Docs/flatten_block.md`를 참고한다.
+See `Docs/flatten_block.md` for details.
 
-## 설치
+<a id="설치"></a>
 
-`install.sh`는 iiXml과 같은 방식으로 빌드, 테스트, 설치를 한 번에 수행하며
-iiHtmlBlock을 macOS, iOS, Android, WASM 패키지로 설치한다. macOS 호환 root prefix는
-`~/.local/SDK/iiHtmlBlock`이고, 플랫폼별 패키지는
-`~/.local/SDK/iiHtmlBlock/platforms/<platform>`에 둔다.
-설치 후 소비 프로젝트는 일반 설치 레이아웃에서 `iiXml` prefix를 별도로 추가하지 않고
-`find_package(iiHtmlBlock CONFIG REQUIRED)` 또는 설치 config 파일 직접 `include()`로
-가져올 수 있다. root config는 CMake target system에 대응하는 플랫폼 패키지로 위임해
-호스트 dylib가 교차 빌드에 잘못 링크되지 않도록 한다.
+## Install
 
-소비자가 지정한 `iiXml_DIR` 또는 이미 가져온 `iiXml::iiXml` 타깃은 보존한다.
-자동 플랫폼 탐색은 명시적 선택이 없을 때만 사용하며, 새 iiFileProvider CRUD 계층을
-사용하는 XML 패키지를 이전 `.local` 설치로 되돌리지 않는다.
-`installed_dependency_selection_test`는 실제 설치 패키지를 별도 CMake 소비자로 읽어
-이 선택이 유지되는지 확인한다.
+`install.sh` builds, tests, and installs at once in the same manner as iiXml, and installs iiHtmlBlock as macOS, iOS, Android, WASM packages. The compatible root prefix for macOS is `~/.local/SDK/iiHtmlBlock`, and platform-specific packages are placed in `~/.local/SDK/iiHtmlBlock/platforms/<platform>`. After installation, the consuming project can separately add the `iiXml` prefix without using the standard install layout, or can directly import `find_package(iiHtmlBlock CONFIG REQUIRED)` or the install config file `include()`. The root config delegates to the platform package corresponding to the CMake target system to prevent the host dylib from being incorrectly linked in cross-compilation.
 
-상세 내용은 `Docs/install.md`를 참고한다.
+Targets specified by the consumer `iiXml_DIR` or already retrieved `iiXml::iiXml` are preserved. Automatic platform discovery is used only when there is no explicit selection, and XML packages using new iiFileProvider CRUD hierarchies are not reverted to the previous `.local` installation. `installed_dependency_selection_test` reads the actual installation package as a separate CMake consumer to verify that this selection is maintained.
 
-## 사용 예시
+See `Docs/install.md` for details.
+
+<a id="사용-예시"></a>
+
+## Usage Examples
 
 ```cpp
 #include <iiHtmlBlock>
@@ -112,11 +80,11 @@ iiHtmlBlock::BlockHTMLSerializer serializer;
 iiHtmlBlock::DeleteBlock deleter;
 ```
 
-실행 가능한 예제는 `Example/ParsedXmlHtmlExample.cpp`에 있으며, 파싱된 XML range,
-HTML 변환 결과, 블록 분할, range 추적, 블록 직렬화, 블록 삭제, 선택 병합, 전체 레이어링 흐름을 함께 보여준다.
-상세 내용은 `Docs/examples.md`를 참고한다.
+Runnable examples are in `Example/ParsedXmlHtmlExample.cpp`, and they show together the parsed XML range, HTML transformation results, block splitting, range tracking, block serialization, block deletion, selection merging, and the full layering flow. See `Docs/examples.md` for details.
 
-## 검증
+<a id="검증"></a>
+
+## Verification
 
 ```sh
 cmake -S . -B build
@@ -128,7 +96,6 @@ ctest --test-dir build --output-on-failure
 
 SPDX-License-Identifier: AGPL-3.0-only
 
-iiHtmlBlock의 자체 작성 코드와 문서는 GNU Affero General Public License
-버전 3.0 전용으로 배포한다. 라이선스 전문은 [LICENSE](LICENSE)에 있다.
+The self-written code and documentation of iiHtmlBlock are distributed exclusively under the GNU Affero General Public License version 3.0. The license text is in [LICENSE](LICENSE).
 
-서드파티 코드, 라이브러리, 도구 및 모델 가중치는 각자의 고유 라이선스를 유지한다.
+Third-party code, libraries, tools, and model weights retain their own individual licenses.
