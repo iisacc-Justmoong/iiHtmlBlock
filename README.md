@@ -1,5 +1,10 @@
 # iiHtmlBlock
 
+Package release: **0.1.1** (2026-10-19). This patch packages the current
+source snapshot; build, test and installation evidence is recorded in the SDK
+patch-release report. Earlier versioned feature notes remain historical.
+
+
 `iiHtmlBlock` is a Qt6.8.3/C++20 shared library for converting `iiXml` input into HTML blocks and manipulating them. The public C++ API resides under the `iiHtmlBlock` namespace.
 
 ## GetTagInfo
