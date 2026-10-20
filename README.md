@@ -101,8 +101,8 @@ ctest --test-dir build --output-on-failure
 
 ## License
 
-SPDX-License-Identifier: AGPL-3.0-only
+SPDX-License-Identifier: MIT
 
-The self-written code and documentation of iiHtmlBlock are distributed exclusively under the GNU Affero General Public License version 3.0. The license text is in [LICENSE](LICENSE).
+The self-written code and documentation of iiHtmlBlock are distributed under the MIT License. The license text is in [LICENSE](LICENSE).
 
 Third-party code, libraries, tools, and model weights retain their own individual licenses.
