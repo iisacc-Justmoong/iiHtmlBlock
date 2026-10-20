@@ -3,6 +3,8 @@
 #include "Src/Modifier/DivideBlock.h"
 
 #include <cassert>
+#include <algorithm>
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -88,6 +90,43 @@ void RejectsCombinedSourceIndexOutsideBlocks() {
     assert(serializer.GetHTMLText().empty());
     assert(!serializer.GetError().empty());
 }
+void RangeProjectionMatchesIndependentContainment() {
+    std::uint32_t seed=123;
+    for (int round=0;round<20;++round) {
+        std::vector<CombineBlock::CombinedBlock> blocks;
+        for (int i=0;i<100;++i) {
+            seed=seed*1664525U+1013904223U;
+            CombineBlock::CombinedBlock block{};
+            block.raw_begin=seed%200;
+            seed=seed*1664525U+1013904223U;
+            block.raw_end=block.raw_begin+seed%30;
+            block.raw="["+std::to_string(i)+"]";
+            blocks.push_back(std::move(block));
+        }
+        auto ordered=blocks;
+        std::sort(ordered.begin(),ordered.end(),[](const auto& a,const auto& b) {
+            return a.raw_begin==b.raw_begin ? a.raw_end>b.raw_end : a.raw_begin<b.raw_begin;
+        });
+        std::vector<CombineBlock::CombinedBlock> emitted;
+        std::string expected;
+        for (const auto& block:ordered) {
+            const auto contained=std::any_of(emitted.begin(),emitted.end(),[&](const auto& prior) {
+                return prior.raw_begin<=block.raw_begin && block.raw_end<=prior.raw_end;
+            });
+            if (!contained) {expected+=block.raw;emitted.push_back(block);}
+        }
+        BlockHTMLSerializer serializer;
+        assert(serializer.SerializeCombinedBlocks(blocks));
+        assert(serializer.GetHTMLText()==expected);
+    }
+    std::vector<CombineBlock::CombinedBlock> adjacent(10000);
+    for (std::size_t i=0;i<adjacent.size();++i) {
+        adjacent[i].raw_begin=i;adjacent[i].raw_end=i+1;adjacent[i].raw="x";
+    }
+    BlockHTMLSerializer serializer;
+    assert(serializer.SerializeCombinedBlocks(adjacent));
+    assert(serializer.GetHTMLText()==std::string(adjacent.size(),'x'));
+}
 
 } // namespace
 
@@ -97,5 +136,6 @@ int main() {
     SerializesMergedBlocksWithCombinedGroupsApplied();
     SerializesSiblingBlocksInDocumentOrder();
     RejectsCombinedSourceIndexOutsideBlocks();
+    RangeProjectionMatchesIndependentContainment();
     return 0;
 }

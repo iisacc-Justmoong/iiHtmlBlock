@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
@@ -27,19 +28,6 @@ bool HasInvalidRange(std::size_t begin, std::size_t end) {
     return begin > end;
 }
 
-bool IsContainedByEmittedUnit(
-    const SerializationUnit& candidate,
-    const std::vector<SerializationUnit>& emitted
-) {
-    for (const SerializationUnit& unit : emitted) {
-        if (unit.raw_begin <= candidate.raw_begin && candidate.raw_end <= unit.raw_end) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 std::string SerializeNonOverlappingUnits(std::vector<SerializationUnit> units) {
     std::sort(
         units.begin(),
@@ -54,23 +42,23 @@ std::string SerializeNonOverlappingUnits(std::vector<SerializationUnit> units) {
     );
 
     std::string html;
-    std::vector<SerializationUnit> emitted;
-    emitted.reserve(units.size());
+    std::optional<std::size_t> furthestEnd;
 
     for (const SerializationUnit& unit : units) {
-        if (IsContainedByEmittedUnit(unit, emitted)) {
+        // Starts are sorted, so the largest emitted end decides containment.
+        if (furthestEnd && unit.raw_end <= *furthestEnd) {
             continue;
         }
 
         html += unit.raw;
-        emitted.push_back(unit);
+        furthestEnd = unit.raw_end;
     }
 
     return html;
 }
 
 bool ContainsIndex(const std::vector<std::size_t>& indexes, std::size_t index) {
-    return std::find(indexes.begin(), indexes.end(), index) != indexes.end();
+    return std::binary_search(indexes.begin(), indexes.end(), index);
 }
 
 std::vector<std::size_t> CollectCombinedSourceIndexes(
