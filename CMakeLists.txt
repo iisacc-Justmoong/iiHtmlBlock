@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(iiHtmlBlock VERSION 0.1.1 LANGUAGES CXX)
+set(iiHtmlBlock_SPDX_LICENSE "Apache-2.0")
 
 if(PROJECT_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(_sdk_home "$ENV{HOME}")
@@ -54,6 +55,11 @@ endif()
 
 iihtmlblock_append_prefix_if_exists("$ENV{HOME}/.local/SDK")
 
+option(IIHTMLBLOCK_SKIP_LIBRARY
+    "Skip the Qt library and build only dependency-free license tests."
+    OFF)
+
+if(NOT IIHTMLBLOCK_SKIP_LIBRARY)
 find_package(Qt6 6.8.3 EXACT REQUIRED COMPONENTS Core)
 find_package(iiXml 0.1.0 REQUIRED CONFIG)
 
@@ -251,3 +257,32 @@ foreach(_test_target IN ITEMS
         target_compile_options(${_test_target} PRIVATE -UNDEBUG)
     endif()
 endforeach()
+endif()
+
+install(FILES
+        "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE"
+        "${CMAKE_CURRENT_SOURCE_DIR}/NOTICE"
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/iiHtmlBlock)
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/Docs/License.md"
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/iiHtmlBlock/docs)
+
+enable_testing()
+
+add_executable(license_text_test
+        Test/license_text_test.cpp)
+
+target_compile_definitions(license_text_test PRIVATE
+        IIHTMLBLOCK_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+set_target_properties(license_text_test PROPERTIES
+        AUTOMOC OFF
+        AUTOUIC OFF
+        AUTORCC OFF)
+
+add_test(NAME License_Apache2_AssertsText COMMAND license_text_test)
+
+add_test(NAME License_Apache2_InstallsText
+        COMMAND ${CMAKE_COMMAND}
+                "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+                "-DBUILD_DIR=${CMAKE_CURRENT_BINARY_DIR}"
+                "-DDATA_DIR=${CMAKE_INSTALL_DATADIR}"
+                -P "${CMAKE_CURRENT_SOURCE_DIR}/Test/license_install.cmake")

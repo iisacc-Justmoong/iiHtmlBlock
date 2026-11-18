@@ -53,6 +53,9 @@ IIHTMLBLOCK_INSTALL_PLATFORMS=ios ./install.sh
 - `~/.local/SDK/iiHtmlBlock/include/iiHtmlBlock.h`: 기존 파일명 기반 공개 헤더
 - `~/.local/SDK/iiHtmlBlock/include/Src`: 모듈별 공개 헤더
 - `~/.local/SDK/iiHtmlBlock/lib/cmake/iiHtmlBlock`: `iiHtmlBlockConfig.cmake`와 export target 파일
+- `~/.local/SDK/iiHtmlBlock/share/iiHtmlBlock/LICENSE`: Apache License 2.0 전문
+- `~/.local/SDK/iiHtmlBlock/share/iiHtmlBlock/NOTICE`: `Copyright (c) 2026 iisacc` 고지
+- `~/.local/SDK/iiHtmlBlock/share/iiHtmlBlock/docs/License.md`: 같은 정책의 한국어 설명
 - `~/.local/SDK/iiHtmlBlock/platforms/macos`: macOS 전용 패키지 mirror
 - `~/.local/SDK/iiHtmlBlock/platforms/ios`: iOS 전용 패키지
 - `~/.local/SDK/iiHtmlBlock/platforms/android`: Android arm64-v8a 전용 패키지
@@ -128,6 +131,19 @@ assertion 안에서 파서 초기화와 결과 검사를 수행하므로 `NDEBUG
 기본 SDK prefix는 이 저장소를 단독 구성할 때만 적용한다. `add_subdirectory()`로
 포함한 상위 프로젝트의 설치 prefix는 유지하고, `HOME`이 비어 있으면
 `USERPROFILE`을 사용자 홈으로 사용한다.
+
+## Qt 없이 라이선스 테스트만 실행
+
+Qt 6.8.3과 iiXml이 없는 구성에서는 라이브러리를 끄고 라이선스 파일 검사만 실행할 수 있다.
+
+```sh
+cmake -S . -B build -DIIHTMLBLOCK_SKIP_LIBRARY=ON
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
+
+이 구성은 `License_Apache2_AssertsText`와 `License_Apache2_InstallsText`만 등록한다.
+공유 라이브러리와 나머지 CTest는 Qt와 iiXml이 있는 기본 구성에서 실행한다.
 # Static linkage on Windows
 
 Use `-DIIHTMLBLOCK_BUILD_SHARED=OFF` when linking against a static iiXml package.
