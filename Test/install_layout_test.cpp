@@ -148,11 +148,21 @@ int main() {
         "The root package version must accept both native and WASM consumers.");
     ExpectContains(cmake_lists, "install(FILES iiHtmlBlock iiHtmlBlock.h",
         "CMakeLists.txt must install the extensionless <iiHtmlBlock> umbrella header.");
+    ExpectContains(cmake_lists, "set(iiHtmlBlock_SPDX_LICENSE \"Apache-2.0\")",
+        "CMakeLists.txt must record the Apache-2.0 SPDX identifier.");
+    ExpectContains(cmake_lists, "\"${CMAKE_CURRENT_SOURCE_DIR}/LICENSE\"",
+        "CMakeLists.txt must install the Apache-2.0 LICENSE.");
+    ExpectContains(cmake_lists, "\"${CMAKE_CURRENT_SOURCE_DIR}/NOTICE\"",
+        "CMakeLists.txt must install NOTICE.");
+    ExpectContains(cmake_lists, "\"${CMAKE_CURRENT_SOURCE_DIR}/Docs/License.md\"",
+        "CMakeLists.txt must install the Korean license statement.");
     ExpectContains(cmake_lists, "install(DIRECTORY Src/",
         "CMakeLists.txt must install public module headers.");
     ExpectContains(cmake_lists, "DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Src",
         "CMakeLists.txt must install module headers without occupying include/iiHtmlBlock.");
 
+    ExpectContains(config_template, "set(iiHtmlBlock_SPDX_LICENSE \"Apache-2.0\")",
+        "iiHtmlBlockConfig.cmake.in must export iiHtmlBlock_SPDX_LICENSE.");
     ExpectContains(config_template, "find_dependency(Qt6 6.8.3 EXACT COMPONENTS Core)",
         "iiHtmlBlockConfig.cmake.in must declare the Qt 6.8.3 dependency.");
     ExpectContains(config_template, "find_dependency(iiXml 0.1.0 CONFIG REQUIRED)",
@@ -187,6 +197,12 @@ int main() {
         "The package must restore the omitted macOS runtime search path for consumers.");
     ExpectContains(docs, "32-bit WASM",
         "Docs/install.md must document architecture-independent root dispatch.");
+    ExpectContains(docs, "share/iiHtmlBlock/LICENSE",
+        "Docs/install.md must document the installed Apache-2.0 LICENSE.");
+    ExpectContains(docs, "share/iiHtmlBlock/NOTICE",
+        "Docs/install.md must document the installed NOTICE.");
+    ExpectContains(docs, "share/iiHtmlBlock/docs/License.md",
+        "Docs/install.md must document the installed Korean license statement.");
 
     ExpectContains(umbrella, "#include \"iiHtmlBlock.h\"",
         "The extensionless iiHtmlBlock header must include iiHtmlBlock.h.");

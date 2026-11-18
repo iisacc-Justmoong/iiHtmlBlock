@@ -101,8 +101,18 @@ ctest --test-dir build --output-on-failure
 
 ## License
 
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: Apache-2.0
 
-The self-written code and documentation of iiHtmlBlock are distributed under the MIT License. The license text is in [LICENSE](LICENSE).
+iiHtmlBlock is an iiSDK module licensed under the
+[Apache License, Version 2.0](LICENSE) (SPDX `Apache-2.0`).
+The copyright notice is `Copyright (c) 2026 iisacc`. Attribution for this
+distribution is in [NOTICE](NOTICE). The Korean statement of the same policy
+is [Docs/License.md](Docs/License.md).
 
-Third-party code, libraries, tools, and model weights retain their own individual licenses.
+Every iiSDK module under SDK is Apache-2.0. iisacc products under Product
+are licensed under the GNU Affero General Public License
+(AGPL-3.0-or-later).
+
+Third-party and vendored code, libraries, fonts, tools, and model weights
+keep their original licenses. External libraries, including Qt, keep the
+license of the installation or notice that accompanies them.

@@ -1,5 +1,7 @@
 @PACKAGE_INIT@
 
+set(iiHtmlBlock_SPDX_LICENSE "Apache-2.0")
+
 include(CMakeFindDependencyMacro)
 
 function(_iiHtmlBlock_detect_target_platform out_var)

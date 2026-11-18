@@ -88,4 +88,12 @@ iiXml에서는 가능하다. `<a>`는 `</a>`를 만날 때까지 살아 있고, 
 풀 리퀘스트에는 변경 설명, 실행한 빌드 및 테스트 명령, 관련 이슈를 포함한다. UI
 변경이 있을 때만 스크린샷을 첨부한다.
 
+## 라이선스
+
+이 저장소의 iiHtmlBlock은 Apache License 2.0이다. 자사 코드, 문서, 도구, 테스트가 포함된다. 저작권 표시는 `Copyright (c) 2026 iisacc`이고 고지는 루트 `NOTICE`에 있다. 사람용 한국어 설명은 [Docs/License.md](Docs/License.md)이다.
+
+`SDK` 아래의 모든 iiSDK 모듈은 Apache-2.0이다. `Product` 아래의 iisacc 제품은 GNU Affero General Public License(AGPL-3.0-or-later)이다.
+
+제3자와 벤더 코드는 원래 라이선스를 유지한다.
+
 ## 에이전트 전용 지침
