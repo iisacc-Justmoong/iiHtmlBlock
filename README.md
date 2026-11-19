@@ -101,8 +101,8 @@ ctest --test-dir build --output-on-failure
 
 ## License
 
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: Apache-2.0
 
-The self-written code and documentation of iiHtmlBlock are distributed under the MIT License. The license text is in [LICENSE](LICENSE).
+The self-written code and documentation of iiHtmlBlock are distributed under the Apache License 2.0. The license text is in [LICENSE](LICENSE).
 
 Third-party code, libraries, tools, and model weights retain their own individual licenses.
